@@ -1,0 +1,57 @@
+{
+  "name": "monorepo-utils",
+  "version": "1.0.0",
+  "description": "General utils for monorepos and dependency management",
+  "module": "dist/bin.js",
+  "type": "module",
+  "scripts": {
+    "build": "bunx rimraf ./dist && tsc",
+    "prepublish": "bun run build",
+    "format": "bunx @biomejs/biome check --write .",
+    "check-updates": "bunx npm-check-updates -ws --root --format group -i",
+    "check-updates-pre": "bunx npm-check-updates -ws -t greatest --pre 1 --root --format group -i",
+    "check-updates-next": "bunx npm-check-updates -ws -t @next --format group -i",
+    "type-check": "bunx tsc --noEmit",
+    "type-check-watch": "bunx tsc --noEmit --watch",
+    "lint": "eslint .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@biomejs/biome": "1.9.4",
+    "typescript": "5.8.3",
+    "husky": "9.1.7",
+    "lint-staged": "15.5.1",
+    "eslint": "9.25.1",
+    "@eslint/js": "9.25.1",
+    "typescript-eslint": "8.31.0",
+    "eslint-plugin-react-compiler": "19.1.0-rc.1",
+    "nx": "20.8.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lostpebble/monorepo-utils.git"
+  },
+  "engines": {
+    "bun": "^1.0.0"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+    ]
+  },
+  "keywords": [
+    "monorepo",
+    "bun",
+    "node",
+    "npm",
+    "node-modules",
+    "modules",
+    "utils",
+    "dependencies",
+    "dependency-management",
+    "repo",
+    "cli"
+  ],
+  "private": false
+}
