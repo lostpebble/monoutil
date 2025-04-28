@@ -8,7 +8,7 @@ export default tsEslint.config(
   eslint.configs.recommended,
   tsEslint.configs.recommended,
   defineConfig([
-    globalIgnores(["**/*/dist/*", ".husky/"]),
+    globalIgnores(["**/*/dist/*", ".husky/", "dist/", "node_modules/"]),
     {
       plugins: {
         "react-compiler": reactCompilerPlugin,
