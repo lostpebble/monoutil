@@ -1,9 +1,13 @@
 {
-  "name": "monorepo-utils",
-  "version": "1.0.0",
+  "name": "monoutil",
+  "version": "0.0.3",
   "description": "General utils for monorepos and dependency management",
+  "files": ["dist", "package.json"],
   "type": "module",
   "module": "dist/bin.js",
+  "bin": {
+    "monoutil": "dist/bin.js"
+  },
   "scripts": {
     "build": "bunx rimraf ./dist && tsc",
     "prepublish": "bun run build",
@@ -14,6 +18,7 @@
     "type-check": "bunx tsc --noEmit",
     "type-check-watch": "bunx tsc --noEmit --watch",
     "lint": "eslint .",
+    "release": "bunx nx release",
     "prepare": "husky"
   },
   "dependencies": {

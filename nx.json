@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "defaultBase": "main",
+  "release": {
+    "projects": ["monorepo-utils"],
+    "projectsRelationship": "fixed",
+    "version": {
+      "preVersionCommand": "bunx nx run-many -t build -p monorepo-utils"
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    },
+    "build-watch": {
+      "dependsOn": ["^build-watch"],
+      "outputs": ["{projectRoot}/dist"],
+      "cache": true
+    }
+  }
+}

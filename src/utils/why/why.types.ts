@@ -13,11 +13,19 @@ export interface IDependant extends IVersionFound {
   type: EDependantType;
 }
 
+export type TDependantExcludingType = Omit<IDependant, "type">;
+
 export interface IWhyModuleVersionInfo {
   name: string;
-  foundVersions: IVersionFound[];
-  dependants: Map<string, IDependant[]>;
-  devDependants: Map<string, IDependant[]>;
+  installed_versions: IVersionFound[];
+  project_dependants: {
+    dev: Map<string, TDependantExcludingType[]>;
+    prod: Map<string, TDependantExcludingType[]>;
+  };
+  external_dependants: {
+    dev: Map<string, TDependantExcludingType[]>;
+    prod: Map<string, TDependantExcludingType[]>;
+  };
 }
 
 /* export interface IWhyModuleDependantInfo {

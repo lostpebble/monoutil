@@ -1,33 +1,57 @@
 import { EDependantType, type IWhyModuleVersionInfo } from "./why.types";
 
+const regexMatchCorrectPackageJsonBackslashes = /\\(?:@[^\\]+\\)?[^\\]+\\package\.json$/;
+
 export async function why(module: string) {
   if (module == null) {
     console.log("No module specified. Exiting.");
     throw Error("No module specified");
   }
 
-  const glob = new Bun.Glob("**/*/package.json");
+  const globDeeper = new Bun.Glob("**/*/package.json");
+  const globRoot = new Bun.Glob("package.json");
 
-  const allPackageJsonFilePaths = await Array.fromAsync(glob.scan());
+  const allPackageJsonFilePaths = [
+    ...(await Array.fromAsync(globRoot.scan())),
+    ...(await Array.fromAsync(globDeeper.scan())),
+  ];
 
-  console.log(`Found ${allPackageJsonFilePaths.length} package.json files`);
+  const projectPackageJsonFiles = allPackageJsonFilePaths.filter(
+    (filePath) => !filePath.includes("node_modules"),
+  );
 
-  // const regexMatchCorrectPackageJson = /\/(?:@[^\/]+\/)?[^\/]+\/package\.json$/;
-  const regexMatchCorrectPackageJsonBackslashes = /\\(?:@[^\\]+\\)?[^\\]+\\package\.json$/;
+  const projectModuleCheck: {
+    [key: string]: boolean;
+  } = {};
 
-  console.log(`First one is ${allPackageJsonFilePaths[0]}`);
+  for (const projectFilePath of projectPackageJsonFiles) {
+    const packageJson = await Bun.file(projectFilePath).json();
+    const packageName = packageJson.name;
+    projectModuleCheck[packageName] = true;
+  }
 
-  const slice = allPackageJsonFilePaths.slice(0, 20);
+  console.log("Project module check", projectModuleCheck);
 
-  console.log("Sample", slice);
+  console.log(
+    `Found ${`${projectPackageJsonFiles.length}`.padEnd(5)} [PROJECT]  package.json files`,
+  );
+  console.log(
+    `Found ${`${allPackageJsonFilePaths.length - projectPackageJsonFiles.length}`.padEnd(5)} [EXTERNAL] package.json files`,
+  );
 
-  const filterForOnlyPackageJsonFilesAtModuleRoot = allPackageJsonFilePaths.filter((filePath) => {
-    return regexMatchCorrectPackageJsonBackslashes.test(filePath);
-  });
+  const filterForOnlyPackageJsonFilesAtModuleRoot = [
+    ...projectPackageJsonFiles,
+    ...allPackageJsonFilePaths.filter((filePath) => {
+      return regexMatchCorrectPackageJsonBackslashes.test(filePath);
+    }),
+  ];
 
   console.log(
     `Found ${filterForOnlyPackageJsonFilesAtModuleRoot.length} package.json files which fit the criteria.`,
   );
+
+  const slice = filterForOnlyPackageJsonFilesAtModuleRoot.slice(0, 20);
+  console.log("Sample", slice);
 
   const mapModuleInfo = new Map<string, IWhyModuleVersionInfo>();
 
@@ -35,9 +59,15 @@ export async function why(module: string) {
     if (!mapModuleInfo.has(name)) {
       mapModuleInfo.set(name, {
         name,
-        foundVersions: [],
-        dependants: new Map(),
-        devDependants: new Map(),
+        installed_versions: [],
+        project_dependants: {
+          dev: new Map(),
+          prod: new Map(),
+        },
+        external_dependants: {
+          dev: new Map(),
+          prod: new Map(),
+        },
       });
     }
   };
@@ -46,26 +76,37 @@ export async function why(module: string) {
     name: string,
     version: string,
     type: EDependantType,
+    isProjectModule: boolean,
   ) => {
     createFreshInfoIfUndefined(name);
-    if (type === EDependantType.prod && !mapModuleInfo.get(name)!.dependants.has(version)) {
-      mapModuleInfo.get(name)!.dependants.set(version, []);
+
+    const dependantMap = isProjectModule
+      ? mapModuleInfo.get(name)!.project_dependants
+      : mapModuleInfo.get(name)!.external_dependants;
+
+    if (type === EDependantType.prod && !dependantMap.prod.has(version)) {
+      dependantMap.prod.set(version, []);
     }
 
-    if (type === EDependantType.dev && !mapModuleInfo.get(name)!.devDependants.has(version)) {
-      mapModuleInfo.get(name)!.devDependants.set(version, []);
+    if (type === EDependantType.dev && !dependantMap.dev.has(version)) {
+      dependantMap.dev.set(version, []);
     }
+
+    return dependantMap;
   };
 
   for (const filePath of filterForOnlyPackageJsonFilesAtModuleRoot) {
     const packageJson = await Bun.file(filePath).json();
     const packageName = packageJson.name;
     const packageVersion = packageJson.version;
+
+    const isProjectModule = projectModuleCheck[packageName];
+
     createFreshInfoIfUndefined(packageName);
 
     const existingInfo = mapModuleInfo.get(packageName)!;
 
-    existingInfo.foundVersions.push({
+    existingInfo.installed_versions.push({
       version: packageJson.version,
       path: filePath,
     });
@@ -73,31 +114,35 @@ export async function why(module: string) {
     const dependencies: Record<string, string> = packageJson.dependencies ?? {};
 
     for (const [dep, version] of Object.entries(dependencies)) {
-      createFreshDependantVersionIfUndefined(dep, version, EDependantType.prod);
+      const dependantMap = createFreshDependantVersionIfUndefined(
+        dep,
+        version,
+        EDependantType.prod,
+        isProjectModule,
+      );
 
-      if (mapModuleInfo.has(dep)) {
-        mapModuleInfo.get(dep)!.dependants.get(version)!.push({
-          type: EDependantType.prod,
-          name: packageName,
-          version: packageVersion,
-          path: filePath,
-        });
-      }
+      dependantMap.prod.get(version)!.push({
+        name: packageName,
+        version: packageVersion,
+        path: filePath,
+      });
     }
 
     const devDependencies: Record<string, string> = packageJson.devDependencies ?? {};
 
     for (const [dep, version] of Object.entries(devDependencies)) {
-      createFreshDependantVersionIfUndefined(dep, version, EDependantType.dev);
+      const dependantMap = createFreshDependantVersionIfUndefined(
+        dep,
+        version,
+        EDependantType.dev,
+        isProjectModule,
+      );
 
-      if (mapModuleInfo.has(dep)) {
-        mapModuleInfo.get(dep)!.devDependants.get(version)!.push({
-          type: EDependantType.dev,
-          name: packageName,
-          version: packageVersion,
-          path: filePath,
-        });
-      }
+      dependantMap.dev.get(version)!.push({
+        name: packageName,
+        version: packageVersion,
+        path: filePath,
+      });
     }
   }
 
