@@ -3,6 +3,20 @@ import { getTextLogicalParts } from "./string_utils/getTextLogicalParts";
 import { inspectTextNaming } from "./string_utils/inspectTextNaming";
 import { shortenMiddleOut } from "./string_utils/shortenMiddleOut";
 
+export const castString = (str: string | null | undefined): string | undefined => {
+  if (nullEmpty(str)) {
+    return undefined;
+  }
+
+  const finalStr = str.toString();
+
+  if (finalStr === "null" || finalStr === "undefined") {
+    return undefined;
+  }
+
+  return finalStr;
+};
+
 export const notNullEmpty = (str: string | null | undefined): str is string => {
   return str != null && str.length > 0;
 };

@@ -16,7 +16,7 @@ export default tsEslint.config(
       rules: {
         "react-compiler/react-compiler": "error",
         "react/display-name": "off",
-        // "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "off",
         // "@typescript-eslint/no-empty-object-type": "off",
         // "@typescript-eslint/array-type": "off",
       },
