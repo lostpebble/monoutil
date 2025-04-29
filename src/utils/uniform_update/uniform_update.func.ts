@@ -1,6 +1,7 @@
 import { EMonoutilId } from "../../monoutil.types";
 import { readJsonFile } from "../_internal/monoutil_internal/files";
 import { createLogger } from "../_internal/monoutil_internal/logging";
+import { getMonorepoProjectPackageJsonFilePaths } from "../_internal/monoutil_internal/monorepo";
 import { IUniformUpdateConfig } from "./uniform_update.types";
 
 const uniformLogger = createLogger(EMonoutilId.uniform_update);
@@ -29,13 +30,19 @@ export async function getUniformUpdateConfig(
 }
 
 export async function uniformUpdate(config: IUniformUpdateConfig): Promise<void> {
-  console.log("[monoutil:uniform_update] Running with config", config);
+  uniformLogger.info("Running with config", config);
+
+  const monorepoPackages = await getMonorepoProjectPackageJsonFilePaths();
+
+  uniformLogger.info(
+    `Found ${monorepoPackages.length} package.json files in monorepo:\n  ${monorepoPackages.join("\n  ")}`,
+  );
 
   if (config.targetVersions) {
     for (const targetVersion of config.targetVersions) {
       // console.log(`Updating to version: ${config.targetVersions}`);
-      console.log(
-        `Updating to version: ${targetVersion} for deps:\n  ${targetVersion.dependencies.join("\n  ")}`,
+      uniformLogger.info(
+        `Updating to version: "${targetVersion.version}" for deps:\n  ${targetVersion.dependencies.join("\n  ")}`,
       );
     }
   }

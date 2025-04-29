@@ -116,66 +116,8 @@ if (utilRequest != null) {
     .exhaustive();
 
   try {
-    const resp = await runUtilFunc();
-    console.log("Response", resp);
+    await runUtilFunc();
   } catch (e) {
     console.error(e);
   }
 }
-
-// program
-//   .command("uniform_update")
-//   .description("Update monorepo packages to the same version uniformly")
-//   .option("--config [config]", "Path to the config file", async (configFileLocation) => {
-//     return await getUniformUpdateConfig();
-//   });
-
-// .addOption(
-//   new Option("--module <module>", "The dependency module to update in the monorepo").implies([
-//     "version",
-//   ]),
-// )
-// .addOption(
-//   new Option(
-//     "--version <version>",
-//     "The version to set it to in the monorepo project modules",
-//   ).implies(["module"]),
-// );
-
-/*program
-  .command("uniform_update")
-  .description("Update monorepo packages to the same version uniformly")
-  .option(
-    "--module <module> <version>",
-    "The dependency module to update and the version to set it to in the monorepo project modules",
-  )
-  .action(async (module?: string, version?: string) => {
-    const { uniformUpdate, getUniformUpdateConfig } = await import(
-      "./utils/uniform_update/uniform_update.func"
-    );
-    let config: IUniformUpdateConfig;
-
-    if (nullEmpty(module) && nullEmpty(version)) {
-      console.log("Getting uniform update config");
-      config = await getUniformUpdateConfig();
-      console.log("Getting uniform update config", config);
-    } else {
-      if (nullEmpty(module) || nullEmpty(version)) {
-        throw new InvalidArgumentError(`The version cannot be empty. (required usage):
-monoutil uniform_update "module-name" "version-to-set"`);
-      }
-
-      config = {
-        targetVersions: [
-          {
-            version,
-            dependencies: [module],
-          },
-        ],
-      };
-    }
-
-    await uniformUpdate(config);
-  });*/
-
-// program.parse(process.argv);
