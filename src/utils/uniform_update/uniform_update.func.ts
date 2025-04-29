@@ -1,4 +1,5 @@
 import { EMonoutilId } from "../../monoutil.types";
+import { readJsonFile } from "../_internal/monoutil_internal/files";
 import { createLogger } from "../_internal/monoutil_internal/logging";
 import { IUniformUpdateConfig } from "./uniform_update.types";
 
@@ -22,17 +23,9 @@ export async function getUniformUpdateConfig(
   configFilePath?: string,
 ): Promise<IUniformUpdateConfig> {
   const filePath = configFilePath ?? "./monoutil/uniform_update.config.json";
-  uniformLogger.info(`[monoutil:uniform_update] Loading config from ${filePath}`);
+  uniformLogger.info(`Loading config from ${filePath}`);
 
-  const configFile = Bun.file(filePath);
-
-  if (!(await configFile.exists())) {
-    throw new Error(`Config file not found at ${filePath}`);
-  }
-
-  const fileText = await configFile.text();
-
-  return await Bun.file(filePath).json();
+  return readJsonFile(filePath, "uniform update config");
 }
 
 export async function uniformUpdate(config: IUniformUpdateConfig): Promise<void> {

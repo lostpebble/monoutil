@@ -21,7 +21,19 @@ const exampleTemplateOption = `[0(File required for "{{filePurpose}}")|(Required
  */
 const exampleTemplateMultipleOptions = `[0(File of type [1("{{fileType}}")|("unknown")1] required for "{{filePurpose}}")|(File required for "{{filePurpose}}")|(Required file)0] was not found at "{{filePath}}"`;
 
-type TemplateInputs = Record<string, string | number | boolean>;
+// type TTemplateInputs = Record<string, string | number | boolean>;
+type TTemplateInputs = {
+  [key: string]: string | number | boolean | undefined;
+};
+
+type TStringOrTemplateMarker<T extends TTemplateInputs> =
+  | string
+  | `{{${Extract<keyof T, string>}}}`;
+
+type TPossibleTemplateStringPart<
+  T extends TTemplateInputs,
+  K extends TStringOrTemplateMarker<T>[] = TStringOrTemplateMarker<T>[],
+> = `${K[number]}`;
 
 /**
  * Processes template strings with conditional sections and variable substitution.
@@ -32,7 +44,10 @@ type TemplateInputs = Record<string, string | number | boolean>;
  * - Optional sections: [[option1|option2|default]]
  * - Nested structures
  */
-export function quickMessageTemplate(template: string, inputs: TemplateInputs): string {
+export function quickMessageTemplate<T extends TTemplateInputs = TTemplateInputs>(
+  template: TPossibleTemplateStringPart<T>,
+  inputs: T,
+): string {
   // First process conditional sections, then handle variable substitutions
   return substituteVariables(processConditionals(template, inputs), inputs);
 }
@@ -43,7 +58,7 @@ const conditionalRegex = new RegExp(/\[(?:(\d)|\[)\(?(.*?)\)?(\1|])]]?/g);
  * Processes conditional sections in the template ([[...]]).
  * Handles both required sections and optional sections with fallbacks.
  */
-function processConditionals(template: string, inputs: TemplateInputs): string {
+function processConditionals(template: string, inputs: TTemplateInputs): string {
   // const conditionalRegex = new RegExp(/\[(?:(\d)|\[|\()\(?(.*?)\)?(\1|]|\))]/g);
 
   return template.replace(conditionalRegex, (match, _, content) => {
@@ -71,7 +86,7 @@ function processConditionals(template: string, inputs: TemplateInputs): string {
 /**
  * Processes a required section - the entire section must be renderable
  */
-function processRequiredSection(content: string, inputs: TemplateInputs): string {
+function processRequiredSection(content: string, inputs: TTemplateInputs): string {
   const rendered = substituteVariables(content, inputs);
 
   // Check if any variables weren't substituted
@@ -85,7 +100,7 @@ function processRequiredSection(content: string, inputs: TemplateInputs): string
 /**
  * Processes an optional section with fallback options
  */
-function processOptionalSection(content: string, inputs: TemplateInputs): string {
+function processOptionalSection(content: string, inputs: TTemplateInputs): string {
   const options = content.split(")|(").map((opt) => opt.trim());
 
   for (const option of options) {
@@ -115,7 +130,7 @@ function processOptionalSection(content: string, inputs: TemplateInputs): string
 /**
  * Substitutes variables in a string with their values from inputs
  */
-function substituteVariables(str: string, inputs: TemplateInputs): string {
+function substituteVariables(str: string, inputs: TTemplateInputs): string {
   return str.replace(/\{\{(.*?)}}/g, (match, variableName) => {
     const value = inputs[variableName.trim()];
 

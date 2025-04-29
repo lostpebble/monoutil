@@ -70,8 +70,6 @@ program
 
 await program.parseAsync(process.argv);
 
-console.log(utilRequest);
-
 if (utilRequest != null) {
   const runUtilFunc = match<TUtilRequest, () => Promise<void>>(utilRequest)
     .with(
@@ -87,20 +85,32 @@ if (utilRequest != null) {
       {
         id: EMonoutilId.uniform_update,
       },
-      (uniformRequest) => async () => {
-        match(uniformRequest).with(
-          {
-            requestType: EUniformRequestType.config,
-          },
-          async (configRequest) => {
-            const { uniformUpdate, getUniformUpdateConfig } = await import(
-              "./utils/uniform_update/uniform_update.func"
-            );
-            const config = await getUniformUpdateConfig(configRequest.config);
-            console.log("Getting uniform update config", config);
-            await uniformUpdate(config);
-          },
+      (request) => async () => {
+        const { uniformUpdate, getUniformUpdateConfig } = await import(
+          "./utils/uniform_update/uniform_update.func"
         );
+
+        if (request.requestType === EUniformRequestType.config) {
+          const config = await getUniformUpdateConfig(request.config);
+          await uniformUpdate(config);
+        } else {
+          const { module, version } = request;
+
+          if (nullEmpty(module) || nullEmpty(version)) {
+            throw new InvalidArgumentError(
+              `The version cannot be empty. (required usage): monoutil uniform_update --module "module-name" --version "version-to-set"`,
+            );
+          }
+
+          await uniformUpdate({
+            targetVersions: [
+              {
+                version: version,
+                dependencies: [module],
+              },
+            ],
+          });
+        }
       },
     )
     .exhaustive();
