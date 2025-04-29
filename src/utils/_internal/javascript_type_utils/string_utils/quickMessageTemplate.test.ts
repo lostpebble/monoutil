@@ -14,7 +14,7 @@ const exampleTemplateArea = `File [[required for "{{filePurpose}}"]] was not fou
  *
  * Otherwise, the second part inside the bracket sections (i.e. "[(" and ")]") will be used.
  */
-const exampleTemplateOption = `[[File required for "{{filePurpose}}")|(Required file]] was not found at "{{filePath}}"`;
+const exampleTemplateOption = `[[(File required for "{{filePurpose}}")|(Required file)]] was not found at "{{filePath}}"`;
 
 /**
  * Same as above, except it will match the first option that includes all the inputs, or none of the inputs, or otherwise
@@ -22,7 +22,7 @@ const exampleTemplateOption = `[[File required for "{{filePurpose}}")|(Required 
  *
  * In this case, the final part has no inputs - so it will be the default option on no matches (no empty string).
  */
-const exampleTemplateMultipleOptions = `[[File of type {{fileType}} required for "{{filePurpose}}")|(File required for "{{filePurpose}}")|(Required file]] was not found at "{{filePath}}"`;
+const exampleTemplateMultipleOptions = `[[(File of type {{fileType}} required for "{{filePurpose}}")|(File required for "{{filePurpose}}")|(Required file)]] was not found at "{{filePath}}"`;
 
 describe("quickMessageTemplate", () => {
   it("should return the same string without any template variables", () => {
