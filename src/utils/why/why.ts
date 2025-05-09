@@ -1,3 +1,4 @@
+import { getMonorepoProjectPackageJsonFilePaths } from "../_internal/monoutil_internal/monorepo";
 import { EDependantType, type IWhyModuleVersionInfo } from "./why.types";
 
 const regexMatchCorrectPackageJsonBackslashes = /\\(?:@[^\\]+\\)?[^\\]+\\package\.json$/;
@@ -8,13 +9,10 @@ export async function why(module: string) {
     throw Error("No module specified");
   }
 
+  const projectPackageJsonPaths = await getMonorepoProjectPackageJsonFilePaths();
   const globDeeper = new Bun.Glob("**/*/package.json");
-  const globRoot = new Bun.Glob("package.json");
 
-  const allPackageJsonFilePaths = [
-    ...(await Array.fromAsync(globRoot.scan())),
-    ...(await Array.fromAsync(globDeeper.scan())),
-  ];
+  const allPackageJsonFilePaths = await Array.fromAsync(globDeeper.scan());
 
   const projectPackageJsonFiles = allPackageJsonFilePaths.filter(
     (filePath) => !filePath.includes("node_modules"),
