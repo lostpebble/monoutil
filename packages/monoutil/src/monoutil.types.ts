@@ -16,7 +16,7 @@ export enum EUniformRequestType {
 export interface IUtilRequest_UniformUpdate_Config {
   id: EMonoutilId.uniform_update;
   requestType: EUniformRequestType.config;
-  config?: string;
+  configFilePath?: string;
 }
 
 export interface IUtilRequest_UniformUpdate_Direct {

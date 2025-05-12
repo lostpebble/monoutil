@@ -63,7 +63,7 @@ program
       utilRequest = {
         id: EMonoutilId.uniform_update,
         requestType: EUniformRequestType.config,
-        config,
+        configFilePath: config,
       } satisfies TUtilRequest_UniformUpdate;
     }
   });
@@ -91,7 +91,7 @@ if (utilRequest != null) {
         );
 
         if (request.requestType === EUniformRequestType.config) {
-          const config = await getUniformUpdateConfig(request.config);
+          const config = await getUniformUpdateConfig(request.configFilePath);
           await uniformUpdate(config);
         } else {
           const { module, version } = request;

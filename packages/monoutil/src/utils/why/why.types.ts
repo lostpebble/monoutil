@@ -1,16 +1,13 @@
+import { EPackageDependencyType } from "../_internal/monoutil_internal/package_json/package_json.enums";
+
 export interface IVersionFound {
   version: string;
   path: string;
 }
 
-export enum EDependantType {
-  dev = "dev",
-  prod = "prod",
-}
-
 export interface IDependant extends IVersionFound {
   name: string;
-  type: EDependantType;
+  type: EPackageDependencyType;
 }
 
 export type TDependantExcludingType = Omit<IDependant, "type">;

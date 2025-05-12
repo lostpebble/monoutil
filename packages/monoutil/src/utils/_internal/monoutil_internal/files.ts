@@ -6,7 +6,7 @@ export const readJsonFile = async <T>(filePath: string, filePurpose?: string): P
   if (!(await file.exists())) {
     throw new Error(
       quickMessageTemplate(
-        '[[(File required for "{{filePurpose}}")|(Required file)]] was not found at "{{filePath}}"',
+        '[[(Required "{{filePurpose}}" file)|(Required file)]] was not found at "{{filePath}}"',
         {
           filePurpose,
           filePath,
@@ -22,10 +22,11 @@ export const readJsonFile = async <T>(filePath: string, filePurpose?: string): P
   } catch (e) {
     throw new Error(
       quickMessageTemplate(
-        '[[("{{filePurpose}}" file)|(Required file)]] was not found at "{{filePath}}"',
+        '[[("{{filePurpose}}" file)|(Required file)]] found at "{{filePath}}" could not be parsed as JSON: {{error}}',
         {
           filePurpose,
           filePath,
+          error: e instanceof Error ? e.message : "Unknown error",
         },
       ),
     );

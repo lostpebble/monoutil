@@ -24,3 +24,5 @@ export const createLogger = (utilId: EMonoutilId) => {
     log: (...log: unknown[]) => logDefault(utilId, ...log),
   };
 };
+
+export type TLogger = ReturnType<typeof createLogger>;

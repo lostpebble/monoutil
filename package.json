@@ -1,16 +1,9 @@
 {
-  "name": "monoutil",
+  "name": "monoutil-monorepo",
   "version": "0.0.3",
   "description": "General utils for monorepos and dependency management",
-  "files": ["dist", "package.json"],
   "type": "module",
-  "module": "dist/bin.js",
-  "bin": {
-    "monoutil": "dist/bin.js"
-  },
   "scripts": {
-    "build": "bunx rimraf ./dist && tsc",
-    "prepublish": "bun run build",
     "format": "bunx @biomejs/biome check --write .",
     "check-updates": "bunx npm-check-updates -ws --root --format group -i",
     "check-updates-pre": "bunx npm-check-updates -ws -t greatest --pre 1 --root --format group -i",
@@ -20,11 +13,6 @@
     "lint": "eslint .",
     "release": "bunx nx release",
     "prepare": "husky"
-  },
-  "dependencies": {
-    "commander": "13.1.0",
-    "tinyglobby": "0.2.13",
-    "ts-pattern": "5.7.0"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -63,5 +51,6 @@
     "repo",
     "cli"
   ],
-  "private": false
+  "workspaces": ["packages/*", "_test_code/test_monorepo/packages/*", "_test_code/test_monorepo/*"],
+  "private": true
 }

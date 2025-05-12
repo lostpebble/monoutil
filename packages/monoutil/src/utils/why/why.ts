@@ -1,5 +1,6 @@
-import { getMonorepoProjectPackageJsonFilePaths } from "../_internal/monoutil_internal/monorepo";
-import { EDependantType, type IWhyModuleVersionInfo } from "./why.types";
+import { getMonorepoProjectPackageJsonFilePaths } from "../_internal/monoutil_internal/package_json/funcs/getMonorepoProjectPackageJsonFilePaths";
+import { EPackageDependencyType } from "../_internal/monoutil_internal/package_json/package_json.enums";
+import { IWhyModuleVersionInfo } from "./why.types";
 
 const regexMatchCorrectPackageJsonBackslashes = /\\(?:@[^\\]+\\)?[^\\]+\\package\.json$/;
 
@@ -73,7 +74,7 @@ export async function why(module: string) {
   const createFreshDependantVersionIfUndefined = (
     name: string,
     version: string,
-    type: EDependantType,
+    type: EPackageDependencyType,
     isProjectModule: boolean,
   ) => {
     createFreshInfoIfUndefined(name);
@@ -82,11 +83,11 @@ export async function why(module: string) {
       ? mapModuleInfo.get(name)!.project_dependants
       : mapModuleInfo.get(name)!.external_dependants;
 
-    if (type === EDependantType.prod && !dependantMap.prod.has(version)) {
+    if (type === EPackageDependencyType.prod && !dependantMap.prod.has(version)) {
       dependantMap.prod.set(version, []);
     }
 
-    if (type === EDependantType.dev && !dependantMap.dev.has(version)) {
+    if (type === EPackageDependencyType.dev && !dependantMap.dev.has(version)) {
       dependantMap.dev.set(version, []);
     }
 
@@ -115,7 +116,7 @@ export async function why(module: string) {
       const dependantMap = createFreshDependantVersionIfUndefined(
         dep,
         version,
-        EDependantType.prod,
+        EPackageDependencyType.prod,
         isProjectModule,
       );
 
@@ -132,7 +133,7 @@ export async function why(module: string) {
       const dependantMap = createFreshDependantVersionIfUndefined(
         dep,
         version,
-        EDependantType.dev,
+        EPackageDependencyType.dev,
         isProjectModule,
       );
 
