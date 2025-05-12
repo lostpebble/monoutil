@@ -118,9 +118,9 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
       }
     }
 
-    uniformLogger.info(
-      `Seeking to update packages:\n  - ${packageUpdates.map(({ name, version, sourceKey }) => `"${name}": "${version}" (${sourceKey})`).join("\n  - ")}`,
-    );
+    // uniformLogger.info(
+    //   `Seeking to update packages:\n  - ${packageUpdates.map(({ name, version, sourceKey }) => `"${name}": "${version}" (${sourceKey})`).join("\n  - ")}`,
+    // );
 
     const update = updatePackageJsonDependencies({
       packageJson,
