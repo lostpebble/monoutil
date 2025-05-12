@@ -10,10 +10,8 @@
   },
   "scripts": {
     "build": "bunx rimraf dist && tsc",
-    "prepublish": "bun run build",
     "type-check": "bunx tsc --noEmit",
-    "type-check-watch": "bunx tsc --noEmit --watch",
-    "release": "bunx nx release"
+    "type-check-watch": "bunx tsc --noEmit --watch"
   },
   "dependencies": {
     "@biomejs/biome": "1.9.4",

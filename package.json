@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "format": "bunx @biomejs/biome check --write .",
+    "build-all": "bunx nx run-many -t build -p monoutil",
+    "build-all-watch": "bunx nx run-many -t build-watch -p monoutil --parallel=8 --output-style=stream",
     "check-updates": "bunx npm-check-updates -ws --root --format group -i",
     "check-updates-pre": "bunx npm-check-updates -ws -t greatest --pre 1 --root --format group -i",
     "check-updates-next": "bunx npm-check-updates -ws -t @next --format group -i",
@@ -26,7 +28,8 @@
     "@eslint/js": "9.25.1",
     "typescript-eslint": "8.31.0",
     "eslint-plugin-react-compiler": "19.1.0-rc.1",
-    "nx": "20.8.1"
+    "nx": "21.0.3",
+    "@nx/js": "21.0.3"
   },
   "repository": {
     "type": "git",
