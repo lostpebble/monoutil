@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {},
   "dependencies": {
-    "pullstate": "1.7.3"
+    "pullstate": "1.7.3",
+    "rimraf": "6.0.1",
+    "lodash": "4.17.21"
   },
   "devDependencies": {
     "monoutil": "workspace:*"

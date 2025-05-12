@@ -1,3 +1,4 @@
+import { $ } from "bun";
 import { EMonoutilId } from "../../monoutil.types";
 import { readJsonFile } from "../_internal/monoutil_internal/files";
 import { createLogger } from "../_internal/monoutil_internal/logging";
@@ -96,14 +97,15 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
 
         if (update.updatedDeps.length > 0) {
           latestPackageJson = update.newPackageJson;
-          // Bun.file(monoPackage).write()
-          await writePackageJsonFile(monoPackage, latestPackageJson);
           updatedDeps.push(...update.updatedDeps);
         }
       }
     }
 
     if (latestPackageJson !== packageJson) {
+      await writePackageJsonFile(monoPackage, latestPackageJson);
+      await $`bunx biome format --write ${monoPackage}`;
+
       if (updatedDeps.length > 0) {
         uniformLogger.log(
           `Updated dependencies in "./${monoPackage}":\n  - ${updatedDeps.map((updatedDep) => `(${updatedDep.type} dependency) [${updatedDep.name}] "${updatedDep.version}" (was "${updatedDep.previousVersion}")`).join("\n  - ")}`,

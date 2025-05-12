@@ -4,6 +4,8 @@ import {
   TEST_PROJECT_RESET_PACKAGE_JSON_PATH,
 } from "./packages/test_src/test_monorepo.static";
 
+console.log("[test_monorepo] Resetting package.json file");
+
 const thisDirectory = import.meta.dirname;
 
 const resetPackageJsonFile = path.join(thisDirectory, TEST_PROJECT_RESET_PACKAGE_JSON_PATH);

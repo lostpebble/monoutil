@@ -64,7 +64,7 @@ export const writeJsonFile = async <T>({
   }
 
   try {
-    return file.write(stringify(json));
+    await file.write(stringify(json));
   } catch (e) {
     throw new Error(
       quickMessageTemplate(
