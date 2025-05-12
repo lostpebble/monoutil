@@ -68,6 +68,7 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
 
     let latestPackageJson = packageJson;
     const updatedDeps: IUpdatedDep[] = [];
+    const packageUpdates: IPackageDependencyUpdate[] = [];
 
     if (config.targetVersions) {
       for (const targetVersion of config.targetVersions) {
@@ -83,8 +84,17 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
         // uniformLogger.info(
         //   `Attempting update of dependencies ["${targetVersion.dependencies.join(`", "`)}"] to version "${targetVersion.version}" in "./${monoPackage}" for package dependency types: ${updateTypes.join(", ")}`,
         // );
+        packageUpdates.push(
+          ...targetVersion.dependencies.map(
+            (depName): IPackageDependencyUpdate => ({
+              updateTypes,
+              version: targetVersion.version,
+              name: depName,
+            }),
+          ),
+        );
 
-        const update = updatePackageJsonDependencies({
+        /*const update = updatePackageJsonDependencies({
           packageJson,
           dependencyUpdates: targetVersion.dependencies.map(
             (depName): IPackageDependencyUpdate => ({
@@ -93,13 +103,43 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
               name: depName,
             }),
           ),
+        });*/
+      }
+    }
+
+    if (config.targetDependencies != null) {
+      for (const targetDependencyObject of config.targetDependencies) {
+        const updateTypes = getDependencyTypes(
+          config.dependencyTypes,
+          targetDependencyObject.dependencyTypes,
+        );
+
+        const depNames = Object.keys(targetDependencyObject.dependencies);
+
+        // uniformLogger.info(
+        //   `Updating dependencies:\n  - ${depNames.map((depName) => `"${depName}": ${targetDependencyObject.dependencies[depName]}`).join("\n  - ")}`,
+        // );
+
+        const packageUpdate = depNames.map((depName): IPackageDependencyUpdate => {
+          return {
+            updateTypes,
+            version: targetDependencyObject.dependencies[depName],
+            name: depName,
+          };
         });
 
-        if (update.updatedDeps.length > 0) {
-          latestPackageJson = update.newPackageJson;
-          updatedDeps.push(...update.updatedDeps);
-        }
+        packageUpdates.push(...packageUpdate);
       }
+    }
+
+    const update = updatePackageJsonDependencies({
+      packageJson,
+      dependencyUpdates: packageUpdates,
+    });
+
+    if (update.updatedDeps.length > 0) {
+      latestPackageJson = update.newPackageJson;
+      updatedDeps.push(...update.updatedDeps);
     }
 
     if (latestPackageJson !== packageJson) {

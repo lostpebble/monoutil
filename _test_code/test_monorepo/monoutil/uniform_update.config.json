@@ -1,12 +1,15 @@
 {
   "targetVersions": [
     {
-      "version": "2.0.0",
-      "dependencies": ["pullstate"]
-    },
-    {
       "version": "4.17.21",
       "dependencies": ["lodash"]
+    }
+  ],
+  "targetDependencies": [
+    {
+      "dependencies": {
+        "pullstate": "2.0.0"
+      }
     }
   ]
 }
