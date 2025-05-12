@@ -50,7 +50,7 @@
     },
     "packages/monoutil": {
       "name": "monoutil",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "bin": {
         "monoutil": "dist/bin.js",
       },

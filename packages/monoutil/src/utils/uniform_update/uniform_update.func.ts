@@ -45,6 +45,10 @@ export async function getUniformUpdateConfig(
   return zUniformUpdateConfig.parse(configJson);
 }
 
+type TPackageUpdateDepWithSource = IPackageDependencyUpdate & {
+  sourceKey: "targetVersions" | "targetDependencies";
+};
+
 export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void> {
   uniformLogger.info("Running with config", config);
 
@@ -54,21 +58,12 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
     `Found ${monorepoPackages.length} package.json files in monorepo:\n  - ${monorepoPackages.join("\n  - ")}`,
   );
 
-  if (config.targetVersions) {
-    for (const targetVersion of config.targetVersions) {
-      // console.log(`Updating to version: ${config.targetVersions}`);
-      uniformLogger.info(
-        `Updating to dependency versions:\n  - ${targetVersion.dependencies.map((name) => `"${name}": "${targetVersion.version}"`).join("\n  - ")}`,
-      );
-    }
-  }
-
   for (const monoPackage of monorepoPackages) {
     const packageJson = await readPackageJsonFile(monoPackage);
 
     let latestPackageJson = packageJson;
     const updatedDeps: IUpdatedDep[] = [];
-    const packageUpdates: IPackageDependencyUpdate[] = [];
+    const packageUpdates: TPackageUpdateDepWithSource[] = [];
 
     if (config.targetVersions) {
       for (const targetVersion of config.targetVersions) {
@@ -86,24 +81,14 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
         // );
         packageUpdates.push(
           ...targetVersion.dependencies.map(
-            (depName): IPackageDependencyUpdate => ({
+            (depName): TPackageUpdateDepWithSource => ({
               updateTypes,
               version: targetVersion.version,
               name: depName,
+              sourceKey: "targetVersions",
             }),
           ),
         );
-
-        /*const update = updatePackageJsonDependencies({
-          packageJson,
-          dependencyUpdates: targetVersion.dependencies.map(
-            (depName): IPackageDependencyUpdate => ({
-              updateTypes,
-              version: targetVersion.version,
-              name: depName,
-            }),
-          ),
-        });*/
       }
     }
 
@@ -120,17 +105,22 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
         //   `Updating dependencies:\n  - ${depNames.map((depName) => `"${depName}": ${targetDependencyObject.dependencies[depName]}`).join("\n  - ")}`,
         // );
 
-        const packageUpdate = depNames.map((depName): IPackageDependencyUpdate => {
+        const packageUpdate = depNames.map((depName): TPackageUpdateDepWithSource => {
           return {
             updateTypes,
             version: targetDependencyObject.dependencies[depName],
             name: depName,
+            sourceKey: "targetDependencies",
           };
         });
 
         packageUpdates.push(...packageUpdate);
       }
     }
+
+    uniformLogger.info(
+      `Seeking to update packages:\n  - ${packageUpdates.map(({ name, version, sourceKey }) => `"${name}": "${version}" (${sourceKey})`).join("\n  - ")}`,
+    );
 
     const update = updatePackageJsonDependencies({
       packageJson,
