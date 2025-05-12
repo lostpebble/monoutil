@@ -83,7 +83,7 @@ export async function why(module: string) {
       ? mapModuleInfo.get(name)!.project_dependants
       : mapModuleInfo.get(name)!.external_dependants;
 
-    if (type === EPackageDependencyType.prod && !dependantMap.prod.has(version)) {
+    if (type === EPackageDependencyType.production && !dependantMap.prod.has(version)) {
       dependantMap.prod.set(version, []);
     }
 
@@ -116,7 +116,7 @@ export async function why(module: string) {
       const dependantMap = createFreshDependantVersionIfUndefined(
         dep,
         version,
-        EPackageDependencyType.prod,
+        EPackageDependencyType.production,
         isProjectModule,
       );
 

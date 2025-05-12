@@ -1,6 +1,10 @@
 import { afterAll, beforeEach, describe, expect, it } from "bun:test";
 import { $ } from "bun";
+import { _uniformUpdateTestExport } from "../../packages/monoutil/src/utils/uniform_update/_uniform_update_test_export";
 import { getTestProjectPackageJsonObject } from "./packages/test_src/funcs/getTestProjectPackageJson";
+
+const { zods, funcs, enums } = _uniformUpdateTestExport;
+const nothing = { zods, funcs, enums };
 
 const originalCwd = process.cwd();
 

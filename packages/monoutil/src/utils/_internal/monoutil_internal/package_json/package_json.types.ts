@@ -19,4 +19,5 @@ export interface IPackageJsonFile {
 
 export interface IUpdatedDep extends IPackageDependency {
   type: EPackageDependencyType;
+  previousVersion: string;
 }

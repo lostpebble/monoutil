@@ -1,6 +1,6 @@
 export enum EPackageDependencyType {
   dev = "dev",
-  prod = "prod",
+  production = "production",
   peer = "peer",
   resolution = "resolution",
   override = "override",

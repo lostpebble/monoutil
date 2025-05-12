@@ -13,7 +13,8 @@
     "lint": "eslint .",
     "release": "bunx nx release",
     "prepare": "husky",
-    "monorepo-test": "bun test --filter ./_test_code/test_monorepo"
+    "monorepo-test": "bun test --filter ./_test_code/test_monorepo",
+    "monorepo-test-watch": "bun test --filter ./_test_code/test_monorepo --watch"
   },
   "devDependencies": {
     "@types/bun": "latest",

@@ -19,3 +19,4 @@ export const zUniformUpdateConfig = z.object({
 
 export type TUniformUpdateConfig = z.infer<typeof zUniformUpdateConfig>;
 export type TUniformUpdateTargetVersion = z.infer<typeof zUniformUpdateTargetVersion>;
+export type TUniformUpdateDependencyTypes = z.infer<typeof zTargetDependencyTypes>;
