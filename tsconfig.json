@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "noEmit": true,
+    "preserveWatchOutput": true,
     "strict": true,
     "skipLibCheck": true,
     "lib": ["ESNext"],

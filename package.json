@@ -8,8 +8,8 @@
     "check-updates": "bunx npm-check-updates -ws --root --format group -i",
     "check-updates-pre": "bunx npm-check-updates -ws -t greatest --pre 1 --root --format group -i",
     "check-updates-next": "bunx npm-check-updates -ws -t @next --format group -i",
-    "type-check": "bunx tsc --noEmit",
-    "type-check-watch": "bunx tsc --noEmit --watch",
+    "type-check-all": "bunx nx run-many -t type-check",
+    "type-check-watch-all": "bunx nx run-many -t type-check-watch --parallel=8 --output-style=stream",
     "lint": "eslint .",
     "release": "bunx nx release",
     "prepare": "husky"
@@ -38,19 +38,6 @@
       "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },
-  "keywords": [
-    "monorepo",
-    "bun",
-    "node",
-    "npm",
-    "node-modules",
-    "modules",
-    "utils",
-    "dependencies",
-    "dependency-management",
-    "repo",
-    "cli"
-  ],
-  "workspaces": ["packages/*", "_test_code/test_monorepo/packages/*", "_test_code/test_monorepo/*"],
+  "workspaces": ["packages/*", "_test_code/test_monorepo/packages/*", "_test_code/*"],
   "private": true
 }

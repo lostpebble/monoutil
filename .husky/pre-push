@@ -1,2 +1,2 @@
-bun run type-check
+bun run type-check-all
 bun run lint
