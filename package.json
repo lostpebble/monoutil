@@ -12,7 +12,8 @@
     "type-check-watch-all": "bunx nx run-many -t type-check-watch --parallel=8 --output-style=stream",
     "lint": "eslint .",
     "release": "bunx nx release",
-    "prepare": "husky"
+    "prepare": "husky",
+    "monorepo-test": "bun test --filter ./_test_code/test_monorepo"
   },
   "devDependencies": {
     "@types/bun": "latest",
