@@ -7,3 +7,11 @@ export const ALL_PACKAGE_DEPENDENCY_TYPES = [
   EPackageDependencyType.resolution,
   EPackageDependencyType.override,
 ];
+
+export const DEPENDENCY_TYPE_TO_KEY = {
+  [EPackageDependencyType.production]: "dependencies",
+  [EPackageDependencyType.dev]: "devDependencies",
+  [EPackageDependencyType.peer]: "peerDependencies",
+  [EPackageDependencyType.resolution]: "resolutions",
+  [EPackageDependencyType.override]: "overrides",
+} as const;

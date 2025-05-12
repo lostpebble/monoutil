@@ -4,6 +4,8 @@ import { _uniformUpdateTestExport } from "../../packages/monoutil/src/utils/unif
 import {
   getTestProjectPackageJsonObject,
   getTestProjectPackageJsonText,
+  getTestProjectTwoPackageJsonObject,
+  getTestProjectTwoPackageJsonText,
 } from "./packages/test_src/funcs/getTestProjectPackageData";
 
 const { zods, funcs, enums } = _uniformUpdateTestExport;
@@ -16,6 +18,24 @@ async function testPackageJsonFileIsOriginal() {
   expect(testPackageJsonOriginal.dependencies).not.toBeUndefined();
   expect(testPackageJsonOriginal.dependencies!["pullstate"]).not.toBeUndefined();
   expect(testPackageJsonOriginal.dependencies!["pullstate"]!).toEqual("1.7.3");
+}
+
+async function testPackageJsonFilesAreUpdate() {
+  const testPackageText = await getTestProjectPackageJsonText();
+  expect(testPackageText).toMatchSnapshot();
+
+  const testPackageTwoText = await getTestProjectTwoPackageJsonText();
+  expect(testPackageTwoText).toMatchSnapshot();
+
+  const testPackageJson = await getTestProjectPackageJsonObject();
+  expect(testPackageJson.dependencies).not.toBeUndefined();
+  expect(testPackageJson.dependencies!["pullstate"]).not.toBeUndefined();
+  expect(testPackageJson.dependencies!["pullstate"]!).toEqual("2.0.0");
+
+  const testPackageTwoJson = await getTestProjectTwoPackageJsonObject();
+  expect(testPackageTwoJson.dependencies).not.toBeUndefined();
+  expect(testPackageTwoJson.dependencies!["lodash"]).not.toBeUndefined();
+  expect(testPackageTwoJson.dependencies!["lodash"]!).toEqual("4.17.21");
 }
 
 describe("monorepo utils", () => {
@@ -35,11 +55,9 @@ describe("monorepo utils", () => {
       await testPackageJsonFileIsOriginal();
 
       await $`bun run monoutil_bin.ts uniform_update --module pullstate --version 2.0.0`;
+      await $`bun run monoutil_bin.ts uniform_update --module lodash --version 4.17.21`;
 
-      const testPackageJson = await getTestProjectPackageJsonObject();
-      expect(testPackageJson.dependencies).not.toBeUndefined();
-      expect(testPackageJson.dependencies!["pullstate"]).not.toBeUndefined();
-      expect(testPackageJson.dependencies!["pullstate"]!).toEqual("2.0.0");
+      await testPackageJsonFilesAreUpdate();
     });
 
     it("should update the monorepo dependencies with a config file", async () => {
@@ -47,14 +65,7 @@ describe("monorepo utils", () => {
 
       await $`bun run monoutil_bin.ts uniform_update`;
 
-      const testPackageJson = await getTestProjectPackageJsonObject();
-      const testPackageText = await getTestProjectPackageJsonText();
-
-      expect(testPackageText).toMatchSnapshot();
-
-      expect(testPackageJson.dependencies).not.toBeUndefined();
-      expect(testPackageJson.dependencies!["pullstate"]).not.toBeUndefined();
-      expect(testPackageJson.dependencies!["pullstate"]!).toEqual("2.0.0");
+      await testPackageJsonFilesAreUpdate();
     });
   });
 });

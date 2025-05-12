@@ -1,5 +1,5 @@
 import { EPackageDependencyType } from "../package_json.enums";
-import { ALL_PACKAGE_DEPENDENCY_TYPES } from "../package_json.static";
+import { ALL_PACKAGE_DEPENDENCY_TYPES, DEPENDENCY_TYPE_TO_KEY } from "../package_json.static";
 import { IPackageDependencyUpdate, IPackageJsonFile, IUpdatedDep } from "../package_json.types";
 
 interface IUpdatePackageDependencies_Input<P extends IPackageJsonFile> {
@@ -22,6 +22,23 @@ export function updatePackageJsonDependencies<P extends IPackageJsonFile>({
 
   const updatedDeps: IUpdatedDep[] = [];
 
+  function updateDependency(type: EPackageDependencyType, depUpdate: IPackageDependencyUpdate) {
+    if (
+      newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]?.[depUpdate.name] != null &&
+      newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name] !== depUpdate.version
+    ) {
+      const previousVersion = newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name];
+      newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name] = depUpdate.version;
+
+      updatedDeps.push({
+        name: depUpdate.name,
+        version: depUpdate.version,
+        type,
+        previousVersion,
+      });
+    }
+  }
+
   for (const dep of dependencyUpdates) {
     const updateTypes = dep.updateTypes ?? ALL_PACKAGE_DEPENDENCY_TYPES;
 
@@ -31,64 +48,24 @@ export function updatePackageJsonDependencies<P extends IPackageJsonFile>({
     const updateOverrides = updateTypes.includes(EPackageDependencyType.override);
     const updateResolutions = updateTypes.includes(EPackageDependencyType.resolution);
 
-    if (updateProd && newPackageJson.dependencies?.[dep.name] != null) {
-      const previousVersion = newPackageJson.dependencies[dep.name];
-      newPackageJson.dependencies[dep.name] = dep.version;
-
-      updatedDeps.push({
-        name: dep.name,
-        version: dep.version,
-        type: EPackageDependencyType.production,
-        previousVersion,
-      });
+    if (updateProd) {
+      updateDependency(EPackageDependencyType.production, dep);
     }
 
-    if (updateDev && newPackageJson.devDependencies?.[dep.name] != null) {
-      const previousVersion = newPackageJson.devDependencies[dep.name];
-      newPackageJson.devDependencies[dep.name] = dep.version;
-
-      updatedDeps.push({
-        name: dep.name,
-        version: dep.version,
-        type: EPackageDependencyType.dev,
-        previousVersion,
-      });
+    if (updateDev) {
+      updateDependency(EPackageDependencyType.dev, dep);
     }
 
-    if (updatePeer && newPackageJson.peerDependencies?.[dep.name] != null) {
-      const previousVersion = newPackageJson.peerDependencies[dep.name];
-      newPackageJson.peerDependencies[dep.name] = dep.version;
-
-      updatedDeps.push({
-        name: dep.name,
-        version: dep.version,
-        type: EPackageDependencyType.peer,
-        previousVersion,
-      });
+    if (updatePeer) {
+      updateDependency(EPackageDependencyType.peer, dep);
     }
 
-    if (updateResolutions && newPackageJson.resolutions?.[dep.name] != null) {
-      const previousVersion = newPackageJson.resolutions[dep.name];
-      newPackageJson.resolutions[dep.name] = dep.version;
-
-      updatedDeps.push({
-        name: dep.name,
-        version: dep.version,
-        type: EPackageDependencyType.resolution,
-        previousVersion,
-      });
+    if (updateResolutions) {
+      updateDependency(EPackageDependencyType.resolution, dep);
     }
 
-    if (updateOverrides && newPackageJson.overrides?.[dep.name] != null) {
-      const previousVersion = newPackageJson.overrides[dep.name];
-      newPackageJson.overrides[dep.name] = dep.version;
-
-      updatedDeps.push({
-        name: dep.name,
-        version: dep.version,
-        type: EPackageDependencyType.override,
-        previousVersion,
-      });
+    if (updateOverrides) {
+      updateDependency(EPackageDependencyType.override, dep);
     }
   }
 
