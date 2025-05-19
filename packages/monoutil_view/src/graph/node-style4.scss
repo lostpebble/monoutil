@@ -1,0 +1,29 @@
+.relation-graph {
+  .rel-map {
+    background: none !important;
+    .rel-node-shape-1 {
+    }
+  }
+  .rel-toolbar{
+    color: #ffffff;
+    .c-current-zoom{
+      color: #ffffff;
+    }
+  }
+}
+.my-graph{
+  background: linear-gradient(to right, rgb(16, 185, 129), rgb(101, 163, 13));
+}
+@keyframes AnimationRound {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.c-round{
+}
+.c-round:hover{
+  animation: AnimationRound 2s infinite;
+}
