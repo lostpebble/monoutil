@@ -1,13 +1,26 @@
 import { EPackageDependencyType } from "./package_json.enums";
 
-export interface IPackageDependency {
+export interface IPackageDependencyVersion {
   name: string;
   version: string;
 }
 
-export interface IPackageDependencyUpdate extends IPackageDependency {
-  updateTypes?: EPackageDependencyType[];
+export interface IPackageDependencyNameChange {
+  fromName: string;
+  toName: string;
 }
+
+export interface IUpdatePackageDependencyVersion extends IPackageDependencyVersion {
+  updateType: "version";
+}
+
+export interface IUpdatePackageDependencyNameChange extends IPackageDependencyNameChange {
+  updateType: "name_change";
+}
+
+export type TPackageDependencyUpdate = {
+  updateTypes?: EPackageDependencyType[];
+} & (IUpdatePackageDependencyVersion | IUpdatePackageDependencyNameChange);
 
 export interface IPackageJsonFile {
   dependencies?: Record<string, string>;
@@ -17,7 +30,8 @@ export interface IPackageJsonFile {
   resolutions?: Record<string, string>;
 }
 
-export interface IUpdatedDep extends IPackageDependency {
+export interface IUpdatedDep extends IPackageDependencyVersion {
   type: EPackageDependencyType;
   previousVersion: string;
+  previousName?: string;
 }

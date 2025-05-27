@@ -20,7 +20,7 @@ async function testPackageJsonFileIsOriginal() {
   expect(testPackageJsonOriginal.dependencies!["pullstate"]!).toEqual("1.7.3");
 }
 
-async function testPackageJsonFilesAreUpdate() {
+async function testPackageJsonFilesAreUpdated() {
   const testPackageText = await getTestProjectPackageJsonText();
   expect(testPackageText).toMatchSnapshot();
 
@@ -57,7 +57,7 @@ describe("monorepo utils", () => {
       await $`bun run monoutil_bin.ts uniform_update --module pullstate --version 2.0.0`;
       await $`bun run monoutil_bin.ts uniform_update --module lodash --version 4.17.21`;
 
-      await testPackageJsonFilesAreUpdate();
+      await testPackageJsonFilesAreUpdated();
     });
 
     it("should update the monorepo dependencies with a config file", async () => {
@@ -65,7 +65,22 @@ describe("monorepo utils", () => {
 
       await $`bun run monoutil_bin.ts uniform_update`;
 
-      await testPackageJsonFilesAreUpdate();
+      await testPackageJsonFilesAreUpdated();
+    });
+
+    it("should change the name of a package (using config file)", async () => {
+      await testPackageJsonFileIsOriginal();
+
+      await $`bun run monoutil_bin.ts uniform_update`;
+
+      // const testPackageText = await getTestProjectPackageJsonText();
+      const testPackageJson = await getTestProjectPackageJsonObject();
+      expect(testPackageJson.dependencies).toBeDefined();
+      expect(testPackageJson.dependencies!["@meteorwallet/gleap"]).toBeDefined();
+      expect(testPackageJson.dependencies!["gleap"]).toBeUndefined();
+      expect(testPackageJson.dependencies!["@meteorwallet/gleap"]).toEqual("14.0.0");
+
+      await testPackageJsonFilesAreUpdated();
     });
   });
 });

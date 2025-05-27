@@ -5,13 +5,12 @@
   "main": "index.js",
   "scripts": {},
   "dependencies": {
-    "pullstate": "1.7.3",
+    "pullstate": "2.0.0",
     "rimraf": "6.0.1",
-    "lodash": "4.17.21"
+    "lodash": "4.17.21",
+    "@meteorwallet/gleap": "14.0.0"
   },
-  "devDependencies": {
-    "monoutil": "workspace:*"
-  },
+  "devDependencies": { "monoutil": "workspace:*" },
   "repository": {
     "type": "git",
     "url": "https://github.com/lostpebble/monorepo-utils.git"

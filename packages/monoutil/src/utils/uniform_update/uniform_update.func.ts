@@ -9,8 +9,8 @@ import { writePackageJsonFile } from "../_internal/monoutil_internal/package_jso
 import { EPackageDependencyType } from "../_internal/monoutil_internal/package_json/package_json.enums";
 import { ALL_PACKAGE_DEPENDENCY_TYPES } from "../_internal/monoutil_internal/package_json/package_json.static";
 import {
-  IPackageDependencyUpdate,
   IUpdatedDep,
+  TPackageDependencyUpdate,
 } from "../_internal/monoutil_internal/package_json/package_json.types";
 import {
   TUniformUpdateConfig,
@@ -19,20 +19,6 @@ import {
 } from "./uniform_update.zod";
 
 const uniformLogger = createLogger(EMonoutilId.uniform_update);
-
-function updateDependencyObject(
-  dependencies: Record<string, string>,
-  depsToUpdate: string[],
-  newVersion: string,
-): Record<string, string> {
-  for (const [depName] of Object.entries(dependencies)) {
-    if (depsToUpdate.includes(depName)) {
-      dependencies[depName] = newVersion;
-    }
-  }
-
-  return dependencies;
-}
 
 export async function getUniformUpdateConfig(
   configFilePath?: string,
@@ -45,8 +31,8 @@ export async function getUniformUpdateConfig(
   return zUniformUpdateConfig.parse(configJson);
 }
 
-type TPackageUpdateDepWithSource = IPackageDependencyUpdate & {
-  sourceKey: "targetVersions" | "targetDependencies";
+type TPackageUpdateDepWithSource = TPackageDependencyUpdate & {
+  sourceKey: "targetVersions" | "targetDependencies" | "changeDependencyNames";
 };
 
 export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void> {
@@ -65,6 +51,29 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
     const updatedDeps: IUpdatedDep[] = [];
     const packageUpdates: TPackageUpdateDepWithSource[] = [];
 
+    if (config.changeDependencyNames) {
+      for (const changeDependencyNames of config.changeDependencyNames) {
+        const updateTypes = getDependencyTypes(
+          config.dependencyTypes,
+          changeDependencyNames.dependencyTypes,
+        );
+
+        const oldDepNames = Object.keys(changeDependencyNames.changes);
+
+        packageUpdates.push(
+          ...oldDepNames.map(
+            (depName): TPackageUpdateDepWithSource => ({
+              updateType: "name_change",
+              updateTypes,
+              fromName: depName,
+              toName: changeDependencyNames.changes[depName],
+              sourceKey: "changeDependencyNames",
+            }),
+          ),
+        );
+      }
+    }
+
     if (config.targetVersions) {
       for (const targetVersion of config.targetVersions) {
         // console.log(`Updating to version: ${config.targetVersions}`);
@@ -82,6 +91,7 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
         packageUpdates.push(
           ...targetVersion.dependencies.map(
             (depName): TPackageUpdateDepWithSource => ({
+              updateType: "version",
               updateTypes,
               version: targetVersion.version,
               name: depName,
@@ -107,6 +117,7 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
 
         const packageUpdate = depNames.map((depName): TPackageUpdateDepWithSource => {
           return {
+            updateType: "version",
             updateTypes,
             version: targetDependencyObject.dependencies[depName],
             name: depName,
@@ -138,7 +149,7 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
 
       if (updatedDeps.length > 0) {
         uniformLogger.log(
-          `Updated dependencies in "./${monoPackage}":\n  - ${updatedDeps.map((updatedDep) => `(${updatedDep.type} dependency) [${updatedDep.name}] "${updatedDep.version}" (was "${updatedDep.previousVersion}")`).join("\n  - ")}`,
+          `Updated dependencies in "./${monoPackage}":\n  - ${updatedDeps.map((updatedDep) => `(${updatedDep.type} dependency) "${updatedDep.name}": "${updatedDep.version}" (was${updatedDep.previousName != null ? ` "${updatedDep.previousName}":` : ""} "${updatedDep.previousVersion}")`).join("\n  - ")}`,
         );
       }
     }

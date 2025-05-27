@@ -5,3 +5,9 @@ export enum EPackageDependencyType {
   resolution = "resolution",
   override = "override",
 }
+
+export enum EPackageDependencyUpdateSource {
+  targetVersions = "targetVersions",
+  targetDependencies = "targetDependencies",
+  changeDependencyName = "changeDependencyName",
+}

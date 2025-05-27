@@ -1,4 +1,11 @@
 {
+  "changeDependencyNames": [
+    {
+      "changes": {
+        "gleap": "@meteorwallet/gleap"
+      }
+    }
+  ],
   "targetVersions": [
     {
       "version": "4.17.21",
@@ -8,7 +15,8 @@
   "targetDependencies": [
     {
       "dependencies": {
-        "pullstate": "2.0.0"
+        "pullstate": "2.0.0",
+        "@meteorwallet/gleap": "14.0.0"
       }
     }
   ]

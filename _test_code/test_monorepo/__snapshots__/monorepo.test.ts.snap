@@ -10,7 +10,8 @@ exports[`monorepo utils uniform_update should update the monorepo dependencies w
   "dependencies": {
     "pullstate": "2.0.0",
     "rimraf": "6.0.1",
-    "lodash": "4.17.21"
+    "lodash": "4.17.21",
+    "gleap": "14.6.7"
   },
   "devDependencies": { "monoutil": "workspace:*" },
   "repository": {
@@ -54,7 +55,8 @@ exports[`monorepo utils uniform_update should update the monorepo dependencies w
   "dependencies": {
     "pullstate": "2.0.0",
     "rimraf": "6.0.1",
-    "lodash": "4.17.21"
+    "lodash": "4.17.21",
+    "@meteorwallet/gleap": "14.0.0"
   },
   "devDependencies": { "monoutil": "workspace:*" },
   "repository": {
@@ -67,6 +69,51 @@ exports[`monorepo utils uniform_update should update the monorepo dependencies w
 `;
 
 exports[`monorepo utils uniform_update should update the monorepo dependencies with a config file 2`] = `
+"{
+  "name": "@monoutil/test_project_package_two",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "pullstate": "2.0.0",
+    "rimraf": "6.0.1",
+    "lodash": "4.17.21"
+  },
+  "devDependencies": { "monoutil": "workspace:*" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lostpebble/monorepo-utils.git"
+  },
+  "private": true
+}
+"
+`;
+
+exports[`monorepo utils uniform_update should change the name of a package (using config file) 1`] = `
+"{
+  "name": "@monoutil/test_project_package",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "pullstate": "2.0.0",
+    "rimraf": "6.0.1",
+    "lodash": "4.17.21",
+    "@meteorwallet/gleap": "14.0.0"
+  },
+  "devDependencies": { "monoutil": "workspace:*" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lostpebble/monorepo-utils.git"
+  },
+  "private": true
+}
+"
+`;
+
+exports[`monorepo utils uniform_update should change the name of a package (using config file) 2`] = `
 "{
   "name": "@monoutil/test_project_package_two",
   "version": "1.0.0",

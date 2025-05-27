@@ -1,10 +1,10 @@
 import { EPackageDependencyType } from "../package_json.enums";
 import { ALL_PACKAGE_DEPENDENCY_TYPES, DEPENDENCY_TYPE_TO_KEY } from "../package_json.static";
-import { IPackageDependencyUpdate, IPackageJsonFile, IUpdatedDep } from "../package_json.types";
+import { IPackageJsonFile, IUpdatedDep, TPackageDependencyUpdate } from "../package_json.types";
 
 interface IUpdatePackageDependencies_Input<P extends IPackageJsonFile> {
   packageJson: P;
-  dependencyUpdates: IPackageDependencyUpdate[];
+  dependencyUpdates: TPackageDependencyUpdate[];
 }
 
 interface IUpdatePackageDependencies_Output<P extends IPackageJsonFile> {
@@ -22,20 +22,34 @@ export function updatePackageJsonDependencies<P extends IPackageJsonFile>({
 
   const updatedDeps: IUpdatedDep[] = [];
 
-  function updateDependency(type: EPackageDependencyType, depUpdate: IPackageDependencyUpdate) {
-    if (
-      newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]?.[depUpdate.name] != null &&
-      newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name] !== depUpdate.version
-    ) {
-      const previousVersion = newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name];
-      newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name] = depUpdate.version;
+  function updateDependency(type: EPackageDependencyType, depUpdate: TPackageDependencyUpdate) {
+    const name = depUpdate["name"] ?? depUpdate["fromName"];
 
-      updatedDeps.push({
-        name: depUpdate.name,
-        version: depUpdate.version,
-        type,
-        previousVersion,
-      });
+    if (newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]?.[name] != null) {
+      if (depUpdate.updateType === "version") {
+        const previousVersion = newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name];
+        newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.name] = depUpdate.version;
+
+        updatedDeps.push({
+          name: depUpdate.name,
+          version: depUpdate.version,
+          type,
+          previousVersion,
+        });
+      } else {
+        const version = newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.fromName];
+        delete newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.fromName];
+        newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.toName] = version;
+        // newPackageJson[DEPENDENCY_TYPE_TO_KEY[type]]![depUpdate.from] = version;
+
+        updatedDeps.push({
+          type,
+          name: depUpdate.toName,
+          version,
+          previousName: depUpdate.fromName,
+          previousVersion: version,
+        });
+      }
     }
   }
 
