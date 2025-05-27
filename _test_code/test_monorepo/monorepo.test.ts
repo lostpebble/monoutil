@@ -45,7 +45,8 @@ describe("monorepo utils", () => {
     await $`bun run reset_test.ts`;
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await $`bun run reset_test.ts`;
     $.cwd(originalCwd);
     process.chdir(originalCwd);
   });
