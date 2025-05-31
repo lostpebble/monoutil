@@ -1,6 +1,6 @@
 {
   "name": "monoutil",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "General utils for monorepos and dependency management",
   "files": ["dist", "package.json"],
   "type": "module",
@@ -13,6 +13,7 @@
     "type-check": "bunx tsc --noEmit",
     "type-check-watch": "bunx tsc --noEmit --watch"
   },
+
   "dependencies": {
     "@inquirer/prompts": "7.5.3",
     "@biomejs/biome": "1.9.4",
