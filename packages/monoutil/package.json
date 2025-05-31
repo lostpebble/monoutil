@@ -14,6 +14,7 @@
     "type-check-watch": "bunx tsc --noEmit --watch"
   },
   "dependencies": {
+    "@inquirer/prompts": "7.5.3",
     "@biomejs/biome": "1.9.4",
     "commander": "13.1.0",
     "tinyglobby": "0.2.13",

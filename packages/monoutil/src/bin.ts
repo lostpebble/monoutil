@@ -3,6 +3,7 @@ import { match } from "ts-pattern";
 import {
   EMonoutilId,
   EUniformRequestType,
+  IUtilRequest_TsRemoveEmittedWithSource,
   IUtilRequest_Why,
   TUtilRequest,
   TUtilRequest_UniformUpdate,
@@ -37,10 +38,15 @@ program
       module,
     } satisfies IUtilRequest_Why;
   });
-/*.action(async (module) => {
-    const { why } = await import("./utils/why/why");
-    await why(module);
-  });*/
+
+program
+  .command("ts_remove_emitted")
+  .description("Removes all emitted TypeScript files without deleting the source files")
+  .action(async (module) => {
+    utilRequest = {
+      id: EMonoutilId.ts_remove_emitted,
+    } satisfies IUtilRequest_TsRemoveEmittedWithSource;
+  });
 
 program
   .command("uniform_update")
@@ -79,6 +85,17 @@ if (utilRequest != null) {
       (request) => async () => {
         const { why } = await import("./utils/why/why");
         await why(request.module);
+      },
+    )
+    .with(
+      {
+        id: EMonoutilId.ts_remove_emitted,
+      },
+      (request) => async () => {
+        const { tsRemoveEmittedFromSource } = await import(
+          "./utils/ts_remove_emitted/ts_remove_emitted.func"
+        );
+        await tsRemoveEmittedFromSource();
       },
     )
     .with(

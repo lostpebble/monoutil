@@ -1,0 +1,14 @@
+{
+  "name": "test_ts_emitted_two",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lostpebble/monorepo-utils.git"
+  },
+  "private": true
+}
