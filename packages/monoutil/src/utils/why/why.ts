@@ -15,15 +15,11 @@ export async function why(module: string) {
 
   const allPackageJsonFilePaths = await Array.fromAsync(globDeeper.scan());
 
-  const projectPackageJsonFiles = allPackageJsonFilePaths.filter(
-    (filePath) => !filePath.includes("node_modules"),
-  );
-
   const projectModuleCheck: {
     [key: string]: boolean;
   } = {};
 
-  for (const projectFilePath of projectPackageJsonFiles) {
+  for (const projectFilePath of projectPackageJsonPaths) {
     const packageJson = await Bun.file(projectFilePath).json();
     const packageName = packageJson.name;
     projectModuleCheck[packageName] = true;
@@ -32,14 +28,14 @@ export async function why(module: string) {
   console.log("Project module check", projectModuleCheck);
 
   console.log(
-    `Found ${`${projectPackageJsonFiles.length}`.padEnd(5)} [PROJECT]  package.json files`,
+    `Found ${`${projectPackageJsonPaths.length}`.padEnd(5)} [PROJECT]  package.json files`,
   );
   console.log(
-    `Found ${`${allPackageJsonFilePaths.length - projectPackageJsonFiles.length}`.padEnd(5)} [EXTERNAL] package.json files`,
+    `Found ${`${allPackageJsonFilePaths.length - projectPackageJsonPaths.length}`.padEnd(5)} [EXTERNAL] package.json files`,
   );
 
   const filterForOnlyPackageJsonFilesAtModuleRoot = [
-    ...projectPackageJsonFiles,
+    ...projectPackageJsonPaths,
     ...allPackageJsonFilePaths.filter((filePath) => {
       return regexMatchCorrectPackageJsonBackslashes.test(filePath);
     }),
