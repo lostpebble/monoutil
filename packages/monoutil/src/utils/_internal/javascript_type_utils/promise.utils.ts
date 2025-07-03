@@ -10,9 +10,9 @@ export async function processPromisesInBatches<T>(
     results.push(...batchResults);
 
     // Optional progress logging
-    console.log(
-      `Processed batch ${i / batchSize + 1}/${Math.ceil(promiseFunctions.length / batchSize)}`,
-    );
+    // console.log(
+    //   `Processed batch ${i / batchSize + 1}/${Math.ceil(promiseFunctions.length / batchSize)}`,
+    // );
   }
 
   return results;
