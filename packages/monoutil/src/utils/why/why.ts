@@ -1,3 +1,5 @@
+import * as path from "node:path";
+import { processPromisesInBatches } from "../_internal/javascript_type_utils/promise.utils";
 import { getMonorepoProjectPackageJsonFilePaths } from "../_internal/monoutil_internal/package_json/funcs/getMonorepoProjectPackageJsonFilePaths";
 import { EPackageDependencyType } from "../_internal/monoutil_internal/package_json/package_json.enums";
 import { IWhyModuleVersionInfo } from "./why.types";
@@ -10,10 +12,16 @@ export async function why(module: string) {
     throw Error("No module specified");
   }
 
-  const projectPackageJsonPaths = await getMonorepoProjectPackageJsonFilePaths();
+  const projectPackageJsonPaths = (await getMonorepoProjectPackageJsonFilePaths()).map((p) =>
+    path.normalize(p),
+  );
   const globDeeper = new Bun.Glob("**/*/package.json");
 
+  // const allPackageJsonFilePaths = await glob(["**/*/package.json"]);
   const allPackageJsonFilePaths = await Array.fromAsync(globDeeper.scan());
+
+  // console.log(stringify(projectPackageJsonPaths));
+  // console.log(stringify(allPackageJsonFilePaths));
 
   const projectModuleCheck: {
     [key: string]: boolean;
@@ -25,28 +33,32 @@ export async function why(module: string) {
     projectModuleCheck[packageName] = true;
   }
 
-  console.log("Project module check", projectModuleCheck);
+  const filterForOnlyPackageJsonFilesAtModuleRoot = [
+    ...new Set([...projectPackageJsonPaths, ...allPackageJsonFilePaths]),
+  ].filter((filePath) => {
+    return filePath === "package.json" || regexMatchCorrectPackageJsonBackslashes.test(filePath);
+  });
+
+  /*
+  * .filter((filePath) => {
+    return regexMatchCorrectPackageJsonBackslashes.test(filePath);
+  });*/
+
+  // console.log(stringify(filterForOnlyPackageJsonFilesAtModuleRoot));
 
   console.log(
     `Found ${`${projectPackageJsonPaths.length}`.padEnd(5)} [PROJECT]  package.json files`,
   );
   console.log(
-    `Found ${`${allPackageJsonFilePaths.length - projectPackageJsonPaths.length}`.padEnd(5)} [EXTERNAL] package.json files`,
+    `Found ${`${filterForOnlyPackageJsonFilesAtModuleRoot.length - projectPackageJsonPaths.length}`.padEnd(5)} [EXTERNAL] package.json files`,
   );
-
-  const filterForOnlyPackageJsonFilesAtModuleRoot = [
-    ...projectPackageJsonPaths,
-    ...allPackageJsonFilePaths.filter((filePath) => {
-      return regexMatchCorrectPackageJsonBackslashes.test(filePath);
-    }),
-  ];
 
   console.log(
     `Found ${filterForOnlyPackageJsonFilesAtModuleRoot.length} package.json files which fit the criteria.`,
   );
 
-  const slice = filterForOnlyPackageJsonFilesAtModuleRoot.slice(0, 20);
-  console.log("Sample", slice);
+  // const slice = filterForOnlyPackageJsonFilesAtModuleRoot.slice(0, 20);
+  // console.log("Sample", slice);
 
   const mapModuleInfo = new Map<string, IWhyModuleVersionInfo>();
 
@@ -90,8 +102,21 @@ export async function why(module: string) {
     return dependantMap;
   };
 
-  for (const filePath of filterForOnlyPackageJsonFilesAtModuleRoot) {
-    const packageJson = await Bun.file(filePath).json();
+  const pathAndPackagePromises = filterForOnlyPackageJsonFilesAtModuleRoot.map((filePath) => {
+    return async () => {
+      // console.log(`Processing package.json at: ${filePath}`);
+      const packageJson = await Bun.file(filePath).json();
+      return {
+        filePath,
+        packageJson,
+      };
+    };
+  });
+
+  for (const { filePath, packageJson } of await processPromisesInBatches(
+    pathAndPackagePromises,
+    500,
+  )) {
     const packageName = packageJson.name;
     const packageVersion = packageJson.version;
 
