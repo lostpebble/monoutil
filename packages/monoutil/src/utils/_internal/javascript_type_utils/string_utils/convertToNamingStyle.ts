@@ -1,14 +1,8 @@
 import { getTextLogicalParts } from "./getTextLogicalParts";
 import { inspectTextNaming } from "./inspectTextNaming";
+import { EVariableNamingStyle } from "./string_formatting.enums";
 
-export enum ENamingStyle {
-  camel_case = "camel_case",
-  snake_case = "snake_case",
-  kebab_case = "kebab_case",
-  pascal_case = "pascal_case",
-}
-
-export function convertToNamingStyle(inputText: string, namingStyle: ENamingStyle) {
+export function convertToNamingStyle(inputText: string, namingStyle: EVariableNamingStyle) {
   let textInfo = inspectTextNaming(inputText);
 
   if (!textInfo.hasKnownStyle) {
@@ -34,29 +28,29 @@ export function convertToNamingStyle(inputText: string, namingStyle: ENamingStyl
 
   for (const [index, part] of textInfo.lowercaseParts.entries()) {
     switch (namingStyle) {
-      case ENamingStyle.camel_case:
+      case EVariableNamingStyle.camel_case:
         if (index === 0) {
           resultText += part;
         } else {
-          resultText += part[0].toUpperCase() + part.slice(1);
+          resultText += part[0]!.toUpperCase() + part.slice(1);
         }
         break;
-      case ENamingStyle.snake_case:
+      case EVariableNamingStyle.snake_case:
         if (index > 0) {
           resultText += `_${part}`;
         } else {
           resultText += part;
         }
         break;
-      case ENamingStyle.kebab_case:
+      case EVariableNamingStyle.kebab_case:
         if (index > 0) {
           resultText += `-${part}`;
         } else {
           resultText += part;
         }
         break;
-      case ENamingStyle.pascal_case:
-        resultText += part[0].toUpperCase() + part.slice(1);
+      case EVariableNamingStyle.pascal_case:
+        resultText += part[0]!.toUpperCase() + part.slice(1);
         break;
     }
   }

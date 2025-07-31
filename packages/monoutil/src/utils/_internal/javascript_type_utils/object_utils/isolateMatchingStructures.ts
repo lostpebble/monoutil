@@ -1,5 +1,5 @@
 import { DeepPartial } from "../../typescript.util_types";
-import { object_utils } from "../object.utils";
+import { isObject } from "./isObject";
 
 type TRecordTrueOrOther<T> = Record<string, boolean | T>;
 type TSnipStructure = TRecordTrueOrOther<
@@ -17,7 +17,7 @@ function _isolateMatchingStructures<T extends object | unknown>(
 ): DeepPartial<T> | T {
   const isMatched = options?.isMatched || false;
 
-  if (!object_utils.isObject(obj)) {
+  if (!isObject(obj)) {
     return obj;
   }
 
@@ -32,7 +32,7 @@ function _isolateMatchingStructures<T extends object | unknown>(
       continue;
     }
 
-    if (object_utils.isObject(obj[key])) {
+    if (isObject(obj[key])) {
       result[key] = _isolateMatchingStructures(obj[key], structure[key] as TSnipStructure, {
         isMatched: true,
       });

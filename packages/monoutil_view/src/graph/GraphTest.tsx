@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import RelationGraph, {
   type RelationGraphComponent,
   type RGJsonData,
@@ -8,7 +8,7 @@ import RelationGraph, {
 import CircumIcon from "./MyDemoIcons";
 import "./node-style4.scss";
 
-const NodeSlot: React.FC<RGNodeSlotProps> = ({ node }) => {
+const NodeSlot = ({ node }: RGNodeSlotProps) => {
   return (
     <div className="c-round w-18 h-18">
       <CircumIcon color="#ffffff" size="70px" name={node.data?.icon} />

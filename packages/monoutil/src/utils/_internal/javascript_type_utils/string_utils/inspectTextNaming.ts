@@ -1,9 +1,9 @@
-import { nullEmpty } from "../string.utils";
-import { ENamingStyle } from "./convertToNamingStyle";
+import { nullEmpty } from "./nullEmptyChecks";
+import { EVariableNamingStyle } from "./string_formatting.enums";
 
 interface IInspectTextNaming_Output_Positive {
   hasKnownStyle: true;
-  styles: ENamingStyle[];
+  styles: EVariableNamingStyle[];
   lowercaseParts: string[];
   originalParts: string[];
 }
@@ -33,7 +33,7 @@ export function inspectTextNaming(text: string): TInspectTextNaming_Output {
 
   const splitter = text.match(splitWordsRegex)?.filter((part) => part.trim().length > 0)?.[0];
 
-  const firstWord = parts[0];
+  const firstWord = parts[0]!;
 
   // If the first part is capitalized, then it's PascalCase
   if (pascalCaseWordRegex.test(firstWord)) {
@@ -44,7 +44,7 @@ export function inspectTextNaming(text: string): TInspectTextNaming_Output {
     const lowercaseParts = parts.map((part) => part.toLowerCase());
     return {
       hasKnownStyle: true,
-      styles: [ENamingStyle.pascal_case],
+      styles: [EVariableNamingStyle.pascal_case],
       lowercaseParts,
       originalParts: parts,
     };
@@ -57,7 +57,11 @@ export function inspectTextNaming(text: string): TInspectTextNaming_Output {
     if (parts.length === 1) {
       return {
         hasKnownStyle: true,
-        styles: [ENamingStyle.camel_case, ENamingStyle.kebab_case, ENamingStyle.snake_case],
+        styles: [
+          EVariableNamingStyle.camel_case,
+          EVariableNamingStyle.kebab_case,
+          EVariableNamingStyle.snake_case,
+        ],
         lowercaseParts,
         originalParts: parts,
       };
@@ -70,7 +74,7 @@ export function inspectTextNaming(text: string): TInspectTextNaming_Output {
         if (splitter === "_") {
           return {
             hasKnownStyle: true,
-            styles: [ENamingStyle.snake_case],
+            styles: [EVariableNamingStyle.snake_case],
             lowercaseParts,
             originalParts: parts,
           };
@@ -79,7 +83,7 @@ export function inspectTextNaming(text: string): TInspectTextNaming_Output {
         if (splitter === "-") {
           return {
             hasKnownStyle: true,
-            styles: [ENamingStyle.kebab_case],
+            styles: [EVariableNamingStyle.kebab_case],
             lowercaseParts,
             originalParts: parts,
           };
@@ -97,7 +101,7 @@ export function inspectTextNaming(text: string): TInspectTextNaming_Output {
 
     return {
       hasKnownStyle: true,
-      styles: [ENamingStyle.camel_case],
+      styles: [EVariableNamingStyle.camel_case],
       lowercaseParts,
       originalParts: parts,
     };
