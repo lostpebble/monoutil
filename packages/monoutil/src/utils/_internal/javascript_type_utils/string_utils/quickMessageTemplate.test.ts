@@ -5,7 +5,7 @@ import { quickMessageTemplate } from "./quickMessageTemplate";
  * If the "filePurpose" input is found, the bracket section (i.e. "[(" and ")]") that contains "{{filePurpose}}"
  * will have the same text as that part, but with "{{filePurpose}}" replaced with the input value of "filePurpose".
  */
-const exampleTemplateArea = `File [[required for "{{filePurpose}}"]] was not found at "{{filePath}}"`;
+const _exampleTemplateArea = `File [[required for "{{filePurpose}}"]] was not found at "{{filePath}}"`;
 
 /**
  * If the "filePurpose" input is found, the first part inside any bracket sections (i.e. "[(" and ")]")
@@ -14,7 +14,7 @@ const exampleTemplateArea = `File [[required for "{{filePurpose}}"]] was not fou
  *
  * Otherwise, the second part inside the bracket sections (i.e. "[(" and ")]") will be used.
  */
-const exampleTemplateOption = `[[(File required for "{{filePurpose}}")|(Required file)]] was not found at "{{filePath}}"`;
+const _exampleTemplateOption = `[[(File required for "{{filePurpose}}")|(Required file)]] was not found at "{{filePath}}"`;
 
 /**
  * Same as above, except it will match the first option that includes all the inputs, or none of the inputs, or otherwise
@@ -22,7 +22,7 @@ const exampleTemplateOption = `[[(File required for "{{filePurpose}}")|(Required
  *
  * In this case, the final part has no inputs - so it will be the default option on no matches (no empty string).
  */
-const exampleTemplateMultipleOptions = `[[(File of type {{fileType}} required for "{{filePurpose}}")|(File required for "{{filePurpose}}")|(Required file)]] was not found at "{{filePath}}"`;
+const _exampleTemplateMultipleOptions = `[[(File of type {{fileType}} required for "{{filePurpose}}")|(File required for "{{filePurpose}}")|(Required file)]] was not found at "{{filePath}}"`;
 
 describe("quickMessageTemplate", () => {
   it("should return the same string without any template variables", () => {

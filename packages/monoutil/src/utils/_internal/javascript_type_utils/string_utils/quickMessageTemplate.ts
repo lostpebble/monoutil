@@ -2,7 +2,7 @@
  * If the "filePurpose" input is found, the bracket section (i.e. "[[" and "]]") that contains "{{filePurpose}}"
  * will have the same text as that part, but with "{{filePurpose}}" replaced with the input value of "filePurpose".
  */
-const exampleTemplateArea = `File [[required for "{{filePurpose}}"]] was not found at "{{filePath}}"`;
+const _exampleTemplateArea = `File [[required for "{{filePurpose}}"]] was not found at "{{filePath}}"`;
 
 /**
  * If the "filePurpose" input is found, the first part inside any bracket sections (i.e. "[[" and "]]")
@@ -11,7 +11,7 @@ const exampleTemplateArea = `File [[required for "{{filePurpose}}"]] was not fou
  *
  * Otherwise, the second part inside the bracket sections (i.e. "[[" and "]]") will be used.
  */
-const exampleTemplateOption = `[0(File required for "{{filePurpose}}")|(Required file)0] was not found at "{{filePath}}"`;
+const _exampleTemplateOption = `[0(File required for "{{filePurpose}}")|(Required file)0] was not found at "{{filePath}}"`;
 
 /**
  * Same as above, except it will match the first option that includes all the inputs, or none of the inputs, or otherwise
@@ -19,7 +19,7 @@ const exampleTemplateOption = `[0(File required for "{{filePurpose}}")|(Required
  *
  * In this case, the final part has no inputs - so it will be the default option on no matches (no empty string).
  */
-const exampleTemplateMultipleOptions = `[0(File of type [1("{{fileType}}")|("unknown")1] required for "{{filePurpose}}")|(File required for "{{filePurpose}}")|(Required file)0] was not found at "{{filePath}}"`;
+const _exampleTemplateMultipleOptions = `[0(File of type [1("{{fileType}}")|("unknown")1] required for "{{filePurpose}}")|(File required for "{{filePurpose}}")|(Required file)0] was not found at "{{filePath}}"`;
 
 // type TTemplateInputs = Record<string, string | number | boolean>;
 type TTemplateInputs = {
@@ -61,7 +61,7 @@ const conditionalRegex = new RegExp(/\[(?:(\d)|\[)\(?(.*?)\)?(\1|])]]?/g);
 function processConditionals(template: string, inputs: TTemplateInputs): string {
   // const conditionalRegex = new RegExp(/\[(?:(\d)|\[|\()\(?(.*?)\)?(\1|]|\))]/g);
 
-  return template.replace(conditionalRegex, (match, _, content) => {
+  return template.replace(conditionalRegex, (_0, _1, content) => {
     // console.log(match);
     // console.log(content);
     // Handle required sections (no pipe character)

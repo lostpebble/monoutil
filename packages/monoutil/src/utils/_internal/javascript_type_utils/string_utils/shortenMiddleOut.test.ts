@@ -1,8 +1,8 @@
 import { describe, expect, it } from "bun:test";
 import {
   IShortenMiddleOutResult_Shortened,
-  TShortenMiddleOutResult,
   shortenMiddleOut,
+  TShortenMiddleOutResult,
 } from "./shortenMiddleOut";
 
 describe("shortenMiddleOut", () => {

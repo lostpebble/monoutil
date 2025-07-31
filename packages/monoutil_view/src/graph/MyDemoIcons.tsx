@@ -2738,7 +2738,7 @@ const MyDemoIcons: React.FC<{
       height={_color}
       viewBox="0 0 24 24"
       fill={color}
-      // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+      // biome-ignore lint/security/noDangerouslySetInnerHtml: Needed to set SVG content directly via string
       dangerouslySetInnerHTML={{ __html: displayIcon.svg }}
     />
   );

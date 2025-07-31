@@ -9,7 +9,7 @@ import {
 } from "./packages/test_src/funcs/getTestProjectPackageData";
 
 const { zods, funcs, enums } = _uniformUpdateTestExport;
-const nothing = { zods, funcs, enums };
+const _nothing = { zods, funcs, enums };
 
 const originalCwd = process.cwd();
 

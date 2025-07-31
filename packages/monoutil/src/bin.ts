@@ -42,7 +42,7 @@ program
 program
   .command("ts_remove_emitted")
   .description("Removes all emitted TypeScript files without deleting the source files")
-  .action(async (module) => {
+  .action(async (_module) => {
     utilRequest = {
       id: EMonoutilId.ts_remove_emitted,
     } satisfies IUtilRequest_TsRemoveEmittedWithSource;
@@ -53,7 +53,7 @@ program
   .option("--config [filepath]", "Path to the config file")
   .option("--module [module]", "The dependency module to update in the monorepo")
   .option("--version [version]", "The version to set for the dependency in the monorepo")
-  .action(async (command, options) => {
+  .action(async (command, _options) => {
     const config = castString(command.config);
     const module = castString(command.module);
     const version = castString(command.version);
@@ -91,7 +91,7 @@ if (utilRequest != null) {
       {
         id: EMonoutilId.ts_remove_emitted,
       },
-      (request) => async () => {
+      (_request) => async () => {
         const { tsRemoveEmittedFromSource } = await import(
           "./utils/ts_remove_emitted/ts_remove_emitted.func"
         );

@@ -12,7 +12,8 @@
     "check-updates-next": "bunx npm-check-updates -ws -t @next --format group -i",
     "type-check-all": "bunx nx run-many -t type-check",
     "type-check-watch-all": "bunx nx run-many -t type-check-watch --parallel=8 --output-style=stream",
-    "lint": "eslint .",
+    "lint": "eslint . --cache",
+    "lint-no-cache": "eslint .",
     "release": "bunx nx release --verbose",
     "prepare": "husky",
     "monorepo-test": "bun test --filter ./_test_code/test_monorepo",
@@ -20,16 +21,20 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "@biomejs/biome": "1.9.4",
-    "typescript": "5.8.3",
+    "@biomejs/biome": "^2.1.3",
+    "@eslint/js": "^9.32.0",
+    "typescript": "^5.9.1-rc",
     "husky": "9.1.7",
-    "lint-staged": "15.5.1",
-    "eslint": "9.25.1",
-    "@eslint/js": "9.25.1",
-    "typescript-eslint": "8.31.0",
-    "eslint-plugin-react-compiler": "19.1.0-rc.1",
-    "nx": "21.0.3",
-    "@nx/js": "21.0.3"
+    "lint-staged": "^16.1.2",
+    "eslint": "^9.32.0",
+    "typescript-eslint": "^8.38.0",
+    "sort-package-json": "^3.4.0",
+    "eslint-plugin-react-compiler": "19.1.0-rc.2",
+    "eslint-plugin-import-x": "^4.16.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "nx": "21.3.10",
+    "@nx/js": "21.3.10"
   },
   "repository": {
     "type": "git",
@@ -43,6 +48,10 @@
       "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
     ]
   },
-  "workspaces": ["packages/*", "_test_code/test_monorepo/packages/*", "_test_code/*"],
+  "workspaces": [
+    "packages/*",
+    "_test_code/test_monorepo/packages/*",
+    "_test_code/*"
+  ],
   "private": true
 }

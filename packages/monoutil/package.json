@@ -2,7 +2,10 @@
   "name": "monoutil",
   "version": "0.8.0",
   "description": "General utils for monorepos and dependency management",
-  "files": ["dist", "package.json"],
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "type": "module",
   "module": "dist/bin.js",
   "bin": {

@@ -1,5 +1,6 @@
 import { describe, expect, it, test } from "bun:test";
 import { string_utils } from "./string.utils";
+
 describe("string.utils", () => {
   describe("string_utils.notNullEmpty()", () => {
     test("returns true for non-empty strings", () => {

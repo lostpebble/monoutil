@@ -5,7 +5,7 @@ export const logError = (utilId: EMonoutilId, error: unknown) => {
 };
 
 export const logWarning = (utilId: EMonoutilId, warning: string, ...more: unknown[]) => {
-  console.warn(`[monoutil] [${utilId}]`, warning);
+  console.warn(`[monoutil] [${utilId}]`, warning, ...more);
 };
 
 export const logInfo = (utilId: EMonoutilId, ...log: unknown[]) => {

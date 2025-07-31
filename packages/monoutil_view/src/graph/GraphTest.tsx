@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from "react";
 import RelationGraph, {
-  type RGJsonData,
-  type RGOptions,
   type RelationGraphComponent,
+  type RGJsonData,
   type RGNodeSlotProps,
+  type RGOptions,
 } from "relation-graph-react";
 import CircumIcon from "./MyDemoIcons";
 import "./node-style4.scss";
@@ -14,6 +14,39 @@ const NodeSlot: React.FC<RGNodeSlotProps> = ({ node }) => {
       <CircumIcon color="#ffffff" size="70px" name={node.data?.icon} />
     </div>
   );
+};
+
+const showGraph = async (graphRef: RelationGraphComponent) => {
+  const __graph_json_data: RGJsonData = {
+    rootId: "a",
+    nodes: [
+      { id: "a", text: "a", data: { icon: "football" } },
+      { id: "b", text: "b", data: { icon: "football" } },
+      { id: "b1", text: "b1", data: { icon: "football" } },
+      { id: "b2", text: "b2", data: { icon: "football" } },
+      { id: "b2-1", text: "b2-1", data: { icon: "football" } },
+      { id: "b2-2", text: "b2-2", data: { icon: "football" } },
+      { id: "c", text: "c", data: { icon: "football" } },
+      { id: "c1", text: "c1", data: { icon: "football" } },
+      { id: "c2", text: "c2", data: { icon: "football" } },
+      { id: "c3", text: "c3", data: { icon: "football" } },
+    ],
+    lines: [
+      { from: "a", to: "b", text: "" },
+      { from: "b", to: "b1", text: "" },
+      { from: "b", to: "b2", text: "" },
+      { from: "b2", to: "b2-1", text: "" },
+      { from: "b2", to: "b2-2", text: "" },
+      { from: "a", to: "c", text: "" },
+      { from: "c", to: "c1", text: "" },
+      { from: "c", to: "c2", text: "" },
+      { from: "c", to: "c3", text: "" },
+    ],
+  };
+  const graphInstance = graphRef.getInstance();
+  await graphInstance.setJsonData(__graph_json_data);
+  graphInstance.moveToCenter();
+  graphInstance.zoomToFit();
 };
 
 const NodeStyle4: React.FC = () => {
@@ -43,41 +76,8 @@ const NodeStyle4: React.FC = () => {
   };
 
   useEffect(() => {
-    showGraph();
+    showGraph(graphRef.current!);
   }, []);
-
-  const showGraph = async () => {
-    const __graph_json_data: RGJsonData = {
-      rootId: "a",
-      nodes: [
-        { id: "a", text: "a", data: { icon: "football" } },
-        { id: "b", text: "b", data: { icon: "football" } },
-        { id: "b1", text: "b1", data: { icon: "football" } },
-        { id: "b2", text: "b2", data: { icon: "football" } },
-        { id: "b2-1", text: "b2-1", data: { icon: "football" } },
-        { id: "b2-2", text: "b2-2", data: { icon: "football" } },
-        { id: "c", text: "c", data: { icon: "football" } },
-        { id: "c1", text: "c1", data: { icon: "football" } },
-        { id: "c2", text: "c2", data: { icon: "football" } },
-        { id: "c3", text: "c3", data: { icon: "football" } },
-      ],
-      lines: [
-        { from: "a", to: "b", text: "" },
-        { from: "b", to: "b1", text: "" },
-        { from: "b", to: "b2", text: "" },
-        { from: "b2", to: "b2-1", text: "" },
-        { from: "b2", to: "b2-2", text: "" },
-        { from: "a", to: "c", text: "" },
-        { from: "c", to: "c1", text: "" },
-        { from: "c", to: "c2", text: "" },
-        { from: "c", to: "c3", text: "" },
-      ],
-    };
-    const graphInstance = graphRef.current!.getInstance();
-    await graphInstance.setJsonData(__graph_json_data);
-    await graphInstance.moveToCenter();
-    await graphInstance.zoomToFit();
-  };
 
   return (
     <div style={{ height: 600, width: 900, border: "#efefef solid 1px" }}>

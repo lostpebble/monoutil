@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { ENamingStyle, convertToNamingStyle } from "./convertToNamingStyle";
+import { convertToNamingStyle, ENamingStyle } from "./convertToNamingStyle";
 
 describe("convertToNamingStyle", () => {
   it("should convert camelCase to kebab-case", () => {
