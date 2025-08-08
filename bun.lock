@@ -77,6 +77,15 @@
         "zod": "3.24.4",
       },
     },
+    "packages/monoutil_connect": {
+      "name": "@monoutil/connect",
+      "version": "0.1.0",
+      "dependencies": {
+        "json-stringify-pretty-compact": "^4.0.0",
+        "semver": "7.7.2",
+        "zod": "3.24.4",
+      },
+    },
     "packages/monoutil_view": {
       "name": "@monoutil/view",
       "version": "0.0.0",
@@ -453,6 +462,8 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.25", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ=="],
+
+    "@monoutil/connect": ["@monoutil/connect@workspace:packages/monoutil_connect"],
 
     "@monoutil/test-monorepo": ["@monoutil/test-monorepo@workspace:_test_code/test_monorepo"],
 
