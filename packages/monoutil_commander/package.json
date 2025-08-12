@@ -8,7 +8,9 @@
     "dev:web": "bunx vite --config web/vite.config.ts",
     "dev": "bunx concurrently \"bun run dev:server\" \"bun run dev:web\"",
     "build:web": "bunx vite build --config web/vite.config.ts",
-    "start": "bun src/server.ts"
+    "start": "bun src/server.ts",
+    "type-check": "bunx tsc --noEmit",
+    "type-check-watch": "bunx tsc --noEmit --watch"
   },
   "dependencies": {
     "hono": "^4.9.0",

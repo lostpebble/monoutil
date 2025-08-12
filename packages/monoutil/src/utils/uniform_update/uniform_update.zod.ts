@@ -14,12 +14,12 @@ export const zUniformUpdateTargetVersion = z.object({
 
 export const zUniformUpdateTargetDependencies = z.object({
   dependencyTypes: zTargetDependencyTypes.optional(),
-  dependencies: z.record(z.string()),
+  dependencies: z.record(z.string(), z.string()),
 });
 
 export const zUniformUpdateChangeDependencyNames = z.object({
   dependencyTypes: zTargetDependencyTypes.optional(),
-  changes: z.record(z.string()),
+  changes: z.record(z.string(), z.string()),
 });
 
 export const zUniformUpdateConfig = z.object({

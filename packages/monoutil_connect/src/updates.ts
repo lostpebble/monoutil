@@ -5,7 +5,6 @@ export type Fetcher = (url: string) => Promise<Response>;
 
 // Allow passing custom fetch for testability; default to global fetch (available in Bun / modern Node)
 async function defaultFetch(url: string) {
-  // @ts-ignore
   return fetch(url);
 }
 

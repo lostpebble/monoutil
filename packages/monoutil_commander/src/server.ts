@@ -32,7 +32,9 @@ async function detectProjectType(projectPath: string): Promise<ProjectType> {
     const pkgRaw = await fs.readFile(pkgPath, "utf8");
     const pkg = JSON.parse(pkgRaw);
     if (pkg && (pkg.workspaces || pkg.packages)) return "monorepo";
-  } catch {}
+  } catch {
+    /* empty */
+  }
   return "single";
 }
 
@@ -57,11 +59,15 @@ app.get("/api/project-info", async (c) => {
     if (Array.isArray(json?.modules)) {
       result.modules = json.modules.map((m: any) => m?.moduleName).filter(Boolean);
     }
-  } catch {}
+  } catch {
+    /* empty */
+  }
   try {
     await fs.stat(localCfgPath);
     result.hasLocal = true;
-  } catch {}
+  } catch {
+    /* empty */
+  }
   return c.json(result);
 });
 
@@ -132,12 +138,13 @@ app.post("/api/link", async (c) => {
 
 // Start server
 const PORT = Number(process.env.PORT ?? 8787);
-export default {
-  port: PORT,
-  fetch: app.fetch,
-};
 
 if (!process.env.VITEST) {
   Bun.serve({ port: PORT, fetch: app.fetch });
   console.log(`[monoutil_commander] listening on http://localhost:${PORT}`);
 }
+
+export default {
+  port: PORT,
+  fetch: app.fetch,
+};
