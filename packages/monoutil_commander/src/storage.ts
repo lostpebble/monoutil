@@ -3,8 +3,8 @@ import os from "node:os";
 import path from "node:path";
 import { CommanderConfig, Project } from "./types";
 
-const APP_FOLDER = "monoutil_commander";
-const CONFIG_FILENAME = "config.json";
+const USER_CONFIG_FOLDER = "./.monoutil";
+const CONFIG_FILENAME = "commander.config.json";
 
 const defaultConfig: CommanderConfig = { projects: [] };
 
@@ -13,8 +13,8 @@ async function ensureDir(dirPath: string) {
 }
 
 export function getStorageDir() {
-  const tmp = os.tmpdir();
-  return path.join(tmp, APP_FOLDER);
+  const tmp = os.homedir();
+  return path.join(tmp, USER_CONFIG_FOLDER);
 }
 
 export function getConfigPath() {
