@@ -14,7 +14,7 @@
     "type-check-watch": "bunx tsc --noEmit --watch"
   },
   "dependencies": {
-    "zod": "3.24.4",
+    "zod": "4.0.17",
     "semver": "7.7.2",
     "json-stringify-pretty-compact": "^4.0.0"
   },

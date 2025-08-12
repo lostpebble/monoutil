@@ -16,15 +16,14 @@
     "type-check": "bunx tsc --noEmit",
     "type-check-watch": "bunx tsc --noEmit --watch"
   },
-
   "dependencies": {
-    "@inquirer/prompts": "7.5.3",
-    "@biomejs/biome": "1.9.4",
-    "commander": "13.1.0",
+    "@inquirer/prompts": "7.8.1",
+    "@biomejs/biome": "2.1.4",
+    "commander": "14.0.0",
     "tinyglobby": "0.2.14",
-    "ts-pattern": "5.7.0",
+    "ts-pattern": "5.8.0",
     "json-stringify-pretty-compact": "^4.0.0",
-    "zod": "3.24.4"
+    "zod": "4.0.17"
   },
   "repository": {
     "type": "git",

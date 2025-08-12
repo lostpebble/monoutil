@@ -1,9 +1,9 @@
-import { Hono } from "hono";
-import { cors } from "@hono/cors";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadConfig, addProject, removeProject } from "./storage";
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { addProject, loadConfig, removeProject } from "./storage";
 import { Project, ProjectType } from "./types";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -67,7 +67,12 @@ app.get("/api/project-info", async (c) => {
 
 app.post("/api/projects", async (c) => {
   try {
-    const body = (await c.req.json()) as { path: string; type?: ProjectType; name?: string; id?: string };
+    const body = (await c.req.json()) as {
+      path: string;
+      type?: ProjectType;
+      name?: string;
+      id?: string;
+    };
     if (!body?.path) return c.json({ error: "path is required" }, 400);
     const normalizedPath = path.resolve(body.path);
     if (!(await pathExists(normalizedPath))) return c.json({ error: "path does not exist" }, 400);
@@ -98,7 +103,8 @@ app.post("/api/link", async (c) => {
     const body = (await c.req.json()) as { projectPath: string; watch?: boolean };
     if (!body?.projectPath) return c.json({ error: "projectPath is required" }, 400);
     const projectPath = path.resolve(body.projectPath);
-    if (!(await pathExists(projectPath))) return c.json({ error: "projectPath does not exist" }, 400);
+    if (!(await pathExists(projectPath)))
+      return c.json({ error: "projectPath does not exist" }, 400);
 
     const runnerPath = path.join(__dirname, "link-runner.ts");
     const cmd = ["bun", runnerPath, ...(body.watch ? ["--watch"] : [])];
