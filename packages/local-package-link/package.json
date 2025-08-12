@@ -1,0 +1,48 @@
+{
+  "name": "local-package-link",
+  "version": "0.1.0",
+  "description": "Link external local packages into a project or monorepo",
+  "files": [
+    "dist",
+    "package.json",
+    "readme.md"
+  ],
+  "type": "module",
+  "module": "dist/index.js",
+  "bin": {
+    "lpl": "dist/bin.js"
+  },
+  "types": "./dist/*.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "clean": "bunx rimraf ./dist",
+    "build": "bunx rimraf ./dist && tsc",
+    "build-watch": "bun run clean && tsc -w",
+    "prepublish": "bun run build"
+  },
+  "dependencies": {
+    "sync-directory": "^6.0.5",
+    "rimraf": "^6.0.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meteor-Wallet/meteor_wallet_shared.git"
+  },
+  "engines": {
+    "bun": "^1.0.0"
+  },
+  "keywords": [
+    "linking",
+    "monorepo",
+    "repo",
+    "cli",
+    "development"
+  ],
+  "private": false
+}
