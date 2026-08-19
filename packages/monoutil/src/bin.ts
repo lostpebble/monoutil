@@ -1,3 +1,4 @@
+#!/usr/bin/env bun
 import { Command, InvalidArgumentError } from "commander";
 import { match } from "ts-pattern";
 import {
