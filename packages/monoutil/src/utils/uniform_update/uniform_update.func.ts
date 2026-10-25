@@ -44,6 +44,11 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
     `Found ${monorepoPackages.length} package.json files in monorepo:\n  - ${monorepoPackages.join("\n  - ")}`,
   );
 
+  // Every file this run writes, formatted together once the versions are all written: a format
+  // failing (or biome ignoring a file, as a repo ignoring its generated folders does) can never stop
+  // the run part-way and leave later packages on their old versions.
+  const written: string[] = [];
+
   for (const monoPackage of monorepoPackages) {
     const packageJson = await readPackageJsonFile(monoPackage);
 
@@ -145,7 +150,7 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
 
     if (latestPackageJson !== packageJson) {
       await writePackageJsonFile(monoPackage, latestPackageJson);
-      await $`bunx biome format --write ${monoPackage}`;
+      written.push(monoPackage);
 
       if (updatedDeps.length > 0) {
         uniformLogger.log(
@@ -153,6 +158,28 @@ export async function uniformUpdate(config: TUniformUpdateConfig): Promise<void>
         );
       }
     }
+  }
+
+  await formatWritten(written);
+  uniformLogger.info(
+    `Updated ${written.length} of ${monorepoPackages.length} package.json files.`,
+  );
+}
+
+/**
+ * Format what the run wrote, with biome, in one call. A path the repo's biome config ignores is not
+ * an error (`--no-errors-on-unmatched`), and a formatting failure is reported, not thrown: the
+ * versions are written already, and formatting is only their layout.
+ */
+async function formatWritten(paths: readonly string[]): Promise<void> {
+  if (paths.length === 0) return;
+  const formatted = await $`bunx biome format --write --no-errors-on-unmatched ${paths}`
+    .nothrow()
+    .quiet();
+  if (formatted.exitCode !== 0) {
+    uniformLogger.warning(
+      `The versions are written, but formatting them failed (exit ${formatted.exitCode}); run \`bunx biome format --write\` on the files above:\n${formatted.stderr.toString().trim()}`,
+    );
   }
 }
 
